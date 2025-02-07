@@ -1,0 +1,13 @@
+###############################################################################
+# Set default behavior to automatically normalize line endings.
+# This ensures that text files use LF (Line Feed) for line endings in the repository,
+# while Git will handle converting line endings appropriately on checkout and commit
+# depending on the operating system.
+###############################################################################
+* text=auto
+
+###############################################################################
+# Force LF line endings for all files.
+# This overrides the default behavior and ensures that files use LF for line endings.
+###############################################################################
+* eol=lf

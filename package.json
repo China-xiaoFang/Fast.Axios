@@ -1,0 +1,94 @@
+{
+	"name": "@fast-china/axios",
+	"author": "小方",
+	"version": "1.0.0",
+	"description": "Fast Axios 请求工具库.",
+	"type": "module",
+	"keywords": [
+		"fast-china",
+		"fast",
+		"typescript",
+		"request",
+		"axios",
+		"axios-adapter"
+	],
+	"license": "Apache-2.0",
+	"publishConfig": {
+		"access": "public"
+	},
+	"homepage": "https://fastdotnet.com",
+	"repository": {
+		"type": "git",
+		"url": "https://gitee.com/China-xiaoFang/fast.axios"
+	},
+	"bugs": {
+		"url": "https://gitee.com/China-xiaoFang/fast.axios/issues"
+	},
+	"scripts": {
+		"check": "vue-tsc",
+		"build": "vue-tsc && tsup",
+		"lint:eslint": "eslint --max-warnings 0 \"src/**/*.{vue,js,ts,tsx}\" --fix",
+		"lint:prettier": "prettier --write \"src/**/*.{vue,js,ts,jsx,tsx,md,json,css,scss,less,html}\"",
+		"lint": "pnpm lint:eslint && pnpm lint:prettier"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./vite": {
+			"import": "./dist/vite.js",
+			"require": "./dist/vite.cjs"
+		},
+		"./webpack": {
+			"import": "./dist/webpack.js",
+			"require": "./dist/webpack .cjs"
+		}
+	},
+	"unpkg": "dist/index.min.js",
+	"jsdelivr": "dist/index.min.js",
+	"gejiayun": "dist/index.min.js",
+	"files": [
+		"./Fast.png",
+		"./LICENSE",
+		"./README.md",
+		"./README.zh.md",
+		"./dist"
+	],
+	"peerDependencies": {
+		"axios": "1.7.2"
+	},
+	"dependencies": {
+		"@types/lodash": "^4.17.14",
+		"@types/lodash-es": "^4.17.12",
+		"local-pkg": "^1.0.0",
+		"lodash": "^4.17.21",
+		"lodash-es": "^4.17.21",
+		"lodash-unified": "^1.0.3",
+		"unplugin": "^2.1.2"
+	},
+	"devDependencies": {
+		"@dcloudio/types": "*",
+		"@types/node": "*",
+		"@typescript-eslint/eslint-plugin": "^8.19.1",
+		"@typescript-eslint/parser": "^8.19.1",
+		"@vue/tsconfig": "^0.7.0",
+		"axios": "1.7.2",
+		"eslint": "^8.57.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-define-config": "^2.1.0",
+		"eslint-plugin-import": "^2.30.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"eslint-plugin-vue": "^9.32.0",
+		"prettier": "^3.3.3",
+		"tsup": "^8.3.6",
+		"typescript": "^5.7.3",
+		"vue-tsc": "^2.2.0"
+	},
+	"engines": {
+		"node": ">=20.0.0"
+	}
+}
