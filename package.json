@@ -1,7 +1,7 @@
 {
 	"name": "@fast-china/axios",
 	"author": "小方",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Fast Axios 请求工具库.",
 	"type": "module",
 	"keywords": [
@@ -26,39 +26,12 @@
 	},
 	"scripts": {
 		"check": "vue-tsc",
-		"build": "vue-tsc && tsup",
+		"update:version": "tsx scripts/update-version.ts",
+		"build": "tsx scripts/build.ts && vue-tsc && vite build --config vite.umd-iife.config.ts && vite build --config vite.es-lib.config.ts && tsup && tsx scripts/move-file.ts",
+		"publish": "cd @fast-china/utils && npm publish",
 		"lint:eslint": "eslint --max-warnings 0 \"src/**/*.{vue,js,ts,tsx}\" --fix",
 		"lint:prettier": "prettier --write \"src/**/*.{vue,js,ts,jsx,tsx,md,json,css,scss,less,html}\"",
 		"lint": "pnpm lint:eslint && pnpm lint:prettier"
-	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
-		},
-		"./vite": {
-			"import": "./dist/vite.js",
-			"require": "./dist/vite.cjs"
-		},
-		"./webpack": {
-			"import": "./dist/webpack.js",
-			"require": "./dist/webpack .cjs"
-		}
-	},
-	"unpkg": "dist/index.min.js",
-	"jsdelivr": "dist/index.min.js",
-	"files": [
-		"./Fast.png",
-		"./LICENSE",
-		"./README.md",
-		"./README.zh.md",
-		"./dist"
-	],
-	"peerDependencies": {
-		"axios": "1.7.2"
 	},
 	"dependencies": {
 		"@types/lodash": "^4.17.14",
@@ -71,6 +44,7 @@
 	},
 	"devDependencies": {
 		"@dcloudio/types": "*",
+		"@rollup/plugin-terser": "^0.4.4",
 		"@types/node": "*",
 		"@typescript-eslint/eslint-plugin": "^8.19.1",
 		"@typescript-eslint/parser": "^8.19.1",
@@ -83,8 +57,11 @@
 		"eslint-plugin-prettier": "^5.2.1",
 		"eslint-plugin-vue": "^9.32.0",
 		"prettier": "^3.3.3",
+		"terser": "^5.38.1",
 		"tsup": "^8.3.6",
 		"typescript": "^5.7.3",
+		"vite": "^6.1.0",
+		"vite-plugin-dts": "^4.5.0",
 		"vue-tsc": "^2.2.0"
 	},
 	"engines": {

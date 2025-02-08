@@ -1,0 +1,104 @@
+{
+  "name": "@fast-china/axios",
+  "author": "小方",
+  "version": "1.0.4",
+  "description": "Fast Axios 请求工具库.",
+  "type": "module",
+  "keywords": [
+    "fast-china",
+    "fast",
+    "typescript",
+    "request",
+    "axios",
+    "axios-adapter"
+  ],
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://fastdotnet.com",
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/China-xiaoFang/fast.axios"
+  },
+  "bugs": {
+    "url": "https://gitee.com/China-xiaoFang/fast.axios/issues"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.mjs",
+  "types": "es/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./vite": {
+      "import": "./es/vite.mjs",
+      "require": "./lib/vite.js"
+    },
+    "./webpack": {
+      "import": "./es/webpack.mjs",
+      "require": "./lib/webpack.js"
+    },
+    "./es": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.mjs"
+    },
+    "./lib": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js"
+    },
+    "./es/*.mjs": {
+      "types": "./es/*.d.ts",
+      "import": "./es/*.mjs"
+    },
+    "./es/*": {
+      "types": [
+        "./es/*.d.ts",
+        "./es/*/index.d.ts"
+      ],
+      "import": "./es/*.mjs"
+    },
+    "./lib/*.js": {
+      "types": "./lib/*.d.ts",
+      "require": "./lib/*.js"
+    },
+    "./lib/*": {
+      "types": [
+        "./lib/*.d.ts",
+        "./lib/*/index.d.ts"
+      ],
+      "require": "./lib/*.js"
+    },
+    "./*": "./*"
+  },
+  "unpkg": "dist/index.global.min.js",
+  "jsdelivr": "dist/index.global.min.js",
+  "files": [
+    "./Fast.png",
+    "./LICENSE",
+    "./README.md",
+    "./README.zh.md",
+    "./dist",
+    "./es",
+    "./lib"
+  ],
+  "peerDependencies": {
+    "axios": "1.7.2"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.17.14",
+    "@types/lodash-es": "^4.17.12",
+    "local-pkg": "^1.0.0",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
+    "lodash-unified": "^1.0.3",
+    "unplugin": "^2.1.2"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "*",
+    "@types/node": "*",
+    "axios": "1.7.2"
+  }
+}
