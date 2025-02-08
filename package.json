@@ -1,7 +1,7 @@
 {
 	"name": "@fast-china/axios",
 	"author": "小方",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Fast Axios 请求工具库.",
 	"type": "module",
 	"keywords": [
@@ -48,9 +48,9 @@
 			"require": "./dist/webpack .cjs"
 		}
 	},
-	"unpkg": "dist/index.js",
-	"jsdelivr": "dist/index.js",
-	"gejiayun": "dist/index.js",
+	"unpkg": "dist/index.min.js",
+	"jsdelivr": "dist/index.min.js",
+	"gejiayun": "dist/index.min.js",
 	"files": [
 		"./Fast.png",
 		"./LICENSE",
