@@ -50,7 +50,6 @@
 	},
 	"unpkg": "dist/index.min.js",
 	"jsdelivr": "dist/index.min.js",
-	"gejiayun": "dist/index.min.js",
 	"files": [
 		"./Fast.png",
 		"./LICENSE",
