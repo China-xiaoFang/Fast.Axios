@@ -28,7 +28,7 @@
 		"check": "vue-tsc",
 		"update:version": "tsx scripts/update-version.ts",
 		"build": "tsx scripts/build.ts && vue-tsc && vite build --config vite.umd-iife.config.ts && vite build --config vite.es-lib.config.ts && tsup && tsx scripts/move-file.ts",
-		"publish": "cd @fast-china/utils && npm publish",
+		"publish": "cd @fast-china/axios && npm publish",
 		"lint:eslint": "eslint --max-warnings 0 \"src/**/*.{vue,js,ts,tsx}\" --fix",
 		"lint:prettier": "prettier --write \"src/**/*.{vue,js,ts,jsx,tsx,md,json,css,scss,less,html}\"",
 		"lint": "pnpm lint:eslint && pnpm lint:prettier"
