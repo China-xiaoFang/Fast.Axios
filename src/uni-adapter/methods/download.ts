@@ -35,7 +35,7 @@ const download: Method = (config) => {
 					const isTimeoutError = errMsg === "downloadFile:fail timeout";
 					if (isTimeoutError) reject(new AxiosError(errMsg, AxiosError.ETIMEDOUT, responseConfig, task));
 
-					const isNetworkError = errMsg === "downloadFile:fail";
+					const isNetworkError = errMsg === "downloadFile:fail ";
 					if (isNetworkError) {
 						reject(new AxiosError(errMsg, AxiosError.ERR_NETWORK, responseConfig, task));
 					}
