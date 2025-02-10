@@ -5,11 +5,6 @@ import type { ApiResponse, AxiosOptions, FastAxiosRequestConfig } from "./type";
 import { useAxios } from "./useAxios";
 import { createUniAppAxiosAdapter } from "../uni-adapter";
 
-/**
- * Http 缓存 Key
- */
-export const HTTP_CACHE_KEY = "HTTP_CACHE_";
-
 const axiosOptions: AxiosOptions = {
 	cancelDuplicateRequest: true,
 	loading: false,
@@ -158,9 +153,8 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 			console.warn("[Fast.Axios] 如果使用 Http Cache，则不能存在任何 'params' 参数");
 		}
 
-		const cacheKey = `${HTTP_CACHE_KEY}${options.url}`;
 		if (uAxios.cache?.get) {
-			const cacheRes = uAxios.cache.get(cacheKey);
+			const cacheRes = uAxios.cache.get(options.url);
 			if (cacheRes) {
 				return Promise.resolve(cacheRes);
 			}
@@ -290,8 +284,7 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 
 				// 判断是否缓存
 				if (options.cache && options.restfulResult && options.simpleDataFormat) {
-					const cacheKey = `${HTTP_CACHE_KEY}${options.url}`;
-					uAxios.cache?.set(cacheKey, (responseData as ApiResponse<Output, Input>)?.data);
+					uAxios.cache?.set(options.url, (responseData as ApiResponse<Output, Input>)?.data);
 				}
 
 				if (options.simpleDataFormat) {

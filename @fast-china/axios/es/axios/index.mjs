@@ -3,7 +3,6 @@ import { isString, isNil, isObject } from "lodash-unified";
 import { useAxios } from "./useAxios.mjs";
 import { createUniAppAxiosAdapter } from "../uni-adapter/index.mjs";
 import "./type.mjs";
-const HTTP_CACHE_KEY = "HTTP_CACHE_";
 const axiosOptions = {
   cancelDuplicateRequest: true,
   loading: false,
@@ -108,9 +107,8 @@ const createAxios = (axiosConfig) => {
     if (options.params) {
       console.warn("[Fast.Axios] 如果使用 Http Cache，则不能存在任何 'params' 参数");
     }
-    const cacheKey = `${HTTP_CACHE_KEY}${options.url}`;
     if ((_a = uAxios.cache) == null ? void 0 : _a.get) {
-      const cacheRes = uAxios.cache.get(cacheKey);
+      const cacheRes = uAxios.cache.get(options.url);
       if (cacheRes) {
         return Promise.resolve(cacheRes);
       }
@@ -203,8 +201,7 @@ const createAxios = (axiosConfig) => {
           responseData = (_f = uAxios.crypto) == null ? void 0 : _f.decrypt(response, options);
         }
         if (options.cache && options.restfulResult && options.simpleDataFormat) {
-          const cacheKey = `${HTTP_CACHE_KEY}${options.url}`;
-          (_g = uAxios.cache) == null ? void 0 : _g.set(cacheKey, responseData == null ? void 0 : responseData.data);
+          (_g = uAxios.cache) == null ? void 0 : _g.set(options.url, responseData == null ? void 0 : responseData.data);
         }
         if (options.simpleDataFormat) {
           return Promise.resolve(responseData == null ? void 0 : responseData.data);
@@ -254,7 +251,6 @@ const axiosUtil = {
   downloadFile
 };
 export {
-  HTTP_CACHE_KEY,
   axiosUtil,
   useAxios
 };

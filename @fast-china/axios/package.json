@@ -1,7 +1,7 @@
 {
   "name": "@fast-china/axios",
   "author": "小方",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Fast Axios 请求工具库.",
   "type": "module",
   "keywords": [
@@ -34,12 +34,12 @@
       "require": "./lib/index.js"
     },
     "./vite": {
-      "import": "./es/vite.mjs",
-      "require": "./lib/vite.js"
+      "import": "./dist/vite.js",
+      "require": "./dist/vite.cjs"
     },
     "./webpack": {
-      "import": "./es/webpack.mjs",
-      "require": "./lib/webpack.js"
+      "import": "./dist/webpack.js",
+      "require": "./dist/webpack .cjs"
     },
     "./es": {
       "types": "./es/index.d.ts",
