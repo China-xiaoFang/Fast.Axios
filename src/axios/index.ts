@@ -319,6 +319,19 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 				return Promise.reject();
 			}
 
+			// 自定义响应错误拦截器
+			if (uAxios.interceptors?.responseError) {
+				try {
+					const result = uAxios.interceptors.responseError(error, options);
+					if (!isNil(result)) {
+						return Promise.resolve(result);
+					}
+				} catch (error) {
+					console.error("[Fast.Axios]", error);
+					return Promise.reject(error);
+				}
+			}
+
 			// 处理错误状态码
 			if (options.showErrorMessage) {
 				const message = await httpErrorStatusHandle(error);

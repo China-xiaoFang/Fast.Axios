@@ -217,7 +217,7 @@ const createAxios = (axiosConfig) => {
       }
     },
     async (error) => {
-      var _a2, _b, _c;
+      var _a2, _b, _c, _d;
       removePending(pendingKey);
       options.loading && ((_a2 = uAxios.loading) == null ? void 0 : _a2.close(options));
       if (axios.isCancel(error)) {
@@ -228,9 +228,20 @@ const createAxios = (axiosConfig) => {
         (_b = uAxios.message) == null ? void 0 : _b.error(errorCodeMessages["offLine"]);
         return Promise.reject();
       }
+      if ((_c = uAxios.interceptors) == null ? void 0 : _c.responseError) {
+        try {
+          const result = uAxios.interceptors.responseError(error, options);
+          if (!isNil(result)) {
+            return Promise.resolve(result);
+          }
+        } catch (error2) {
+          console.error("[Fast.Axios]", error2);
+          return Promise.reject(error2);
+        }
+      }
       if (options.showErrorMessage) {
         const message = await httpErrorStatusHandle(error);
-        (_c = uAxios.message) == null ? void 0 : _c.error(message);
+        (_d = uAxios.message) == null ? void 0 : _d.error(message);
       }
       console.error("[Fast.Axios]", error);
       return Promise.reject(error);
