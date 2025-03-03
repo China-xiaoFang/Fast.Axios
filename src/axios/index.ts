@@ -324,7 +324,7 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 				try {
 					const result = uAxios.interceptors.responseError(error, options);
 					if (!isNil(result)) {
-						return Promise.resolve(result);
+						return Promise.reject(result);
 					}
 				} catch (error) {
 					console.error("[Fast.Axios]", error);

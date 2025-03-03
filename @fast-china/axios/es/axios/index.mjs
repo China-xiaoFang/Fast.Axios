@@ -232,7 +232,7 @@ const createAxios = (axiosConfig) => {
         try {
           const result = uAxios.interceptors.responseError(error, options);
           if (!isNil(result)) {
-            return Promise.resolve(result);
+            return Promise.reject(result);
           }
         } catch (error2) {
           console.error("[Fast.Axios]", error2);
