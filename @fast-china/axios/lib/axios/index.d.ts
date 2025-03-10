@@ -13,4 +13,4 @@ export declare const axiosUtil: {
     downloadFile: (response: AxiosResponse) => void;
 };
 export * from './type';
-export * from './useAxios';
+export * from './fastAxios';

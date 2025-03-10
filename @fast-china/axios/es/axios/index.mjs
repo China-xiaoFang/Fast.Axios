@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { isString, isNil, isObject } from "lodash-unified";
-import { useAxios } from "./useAxios.mjs";
+import { useFastAxios } from "./fastAxios.mjs";
+import { createFastAxios } from "./fastAxios.mjs";
 import { createUniAppAxiosAdapter } from "../uni-adapter/index.mjs";
 import "./type.mjs";
 const axiosOptions = {
@@ -98,17 +99,17 @@ const downloadFile = (response) => {
 };
 const createAxios = (axiosConfig) => {
   var _a;
-  const uAxios = useAxios();
+  const fastAxios = useFastAxios();
   const options = { ...axiosOptions, ...axiosConfig };
   if (isNil(options.requestCipher)) {
-    options.requestCipher = uAxios.requestCipher;
+    options.requestCipher = fastAxios.requestCipher;
   }
   if (options.cache && options.method.toUpperCase() === "GET" && options.restfulResult && options.simpleDataFormat) {
     if (options.params) {
       console.warn("[Fast.Axios] 如果使用 Http Cache，则不能存在任何 'params' 参数");
     }
-    if ((_a = uAxios.cache) == null ? void 0 : _a.get) {
-      const cacheRes = uAxios.cache.get(options.url);
+    if ((_a = fastAxios.cache) == null ? void 0 : _a.get) {
+      const cacheRes = fastAxios.cache.get(options.url);
       if (cacheRes) {
         return Promise.resolve(cacheRes);
       }
@@ -121,10 +122,10 @@ const createAxios = (axiosConfig) => {
   const Axios = axios.create({
     /** 如果是 UniApp 则默认使用适配器 */
     adapter: typeof uni !== "undefined" ? createUniAppAxiosAdapter() : void 0,
-    baseURL: uAxios.baseUrl,
-    timeout: uAxios.timeout,
+    baseURL: fastAxios.baseUrl,
+    timeout: fastAxios.timeout,
     headers: {
-      ...uAxios.headers
+      ...fastAxios.headers
     },
     responseType: "json"
   });
@@ -133,11 +134,11 @@ const createAxios = (axiosConfig) => {
       var _a2, _b, _c;
       removePending(pendingKey);
       options.cancelDuplicateRequest && addPending(pendingKey, config);
-      (_a2 = uAxios.interceptors) == null ? void 0 : _a2.request(config);
-      options.loading && ((_b = uAxios.loading) == null ? void 0 : _b.show(options.loadingText));
+      (_a2 = fastAxios.interceptors) == null ? void 0 : _a2.request(config);
+      options.loading && ((_b = fastAxios.loading) == null ? void 0 : _b.show(options.loadingText));
       if (config.responseType === "json") {
         if (options.requestCipher) {
-          (_c = uAxios.crypto) == null ? void 0 : _c.encrypt(config, timestamp);
+          (_c = fastAxios.crypto) == null ? void 0 : _c.encrypt(config, timestamp);
         } else {
           if (options.getMethodCacheHandle && config.method.toUpperCase() === "GET") {
             config.params = config.params || {};
@@ -156,10 +157,10 @@ const createAxios = (axiosConfig) => {
     (response) => {
       var _a2, _b, _c, _d, _e, _f, _g;
       removePending(pendingKey);
-      options.loading && ((_a2 = uAxios.loading) == null ? void 0 : _a2.close(options));
-      if ((_b = uAxios.interceptors) == null ? void 0 : _b.response) {
+      options.loading && ((_a2 = fastAxios.loading) == null ? void 0 : _a2.close(options));
+      if ((_b = fastAxios.interceptors) == null ? void 0 : _b.response) {
         try {
-          const result = uAxios.interceptors.response(response, options);
+          const result = fastAxios.interceptors.response(response, options);
           if (!isNil(result)) {
             return Promise.resolve(result);
           }
@@ -175,7 +176,7 @@ const createAxios = (axiosConfig) => {
           }
           return Promise.resolve(response);
         } else {
-          (_c = uAxios.message) == null ? void 0 : _c.error(errorCodeMessages["fileDownloadError"]);
+          (_c = fastAxios.message) == null ? void 0 : _c.error(errorCodeMessages["fileDownloadError"]);
           return Promise.reject(response);
         }
       } else if (response.config.responseType === "json") {
@@ -187,9 +188,9 @@ const createAxios = (axiosConfig) => {
             if (options.showCodeMessage) {
               if (restfulData == null ? void 0 : restfulData.message) {
                 if (isObject(restfulData == null ? void 0 : restfulData.message)) {
-                  (_d = uAxios.message) == null ? void 0 : _d.error(JSON.stringify(restfulData == null ? void 0 : restfulData.message));
+                  (_d = fastAxios.message) == null ? void 0 : _d.error(JSON.stringify(restfulData == null ? void 0 : restfulData.message));
                 } else {
-                  (_e = uAxios.message) == null ? void 0 : _e.error(restfulData == null ? void 0 : restfulData.message);
+                  (_e = fastAxios.message) == null ? void 0 : _e.error(restfulData == null ? void 0 : restfulData.message);
                 }
               }
             }
@@ -198,10 +199,10 @@ const createAxios = (axiosConfig) => {
           }
         }
         if (options.requestCipher) {
-          responseData = (_f = uAxios.crypto) == null ? void 0 : _f.decrypt(response, options);
+          responseData = (_f = fastAxios.crypto) == null ? void 0 : _f.decrypt(response, options);
         }
         if (options.cache && options.restfulResult && options.simpleDataFormat) {
-          (_g = uAxios.cache) == null ? void 0 : _g.set(options.url, responseData == null ? void 0 : responseData.data);
+          (_g = fastAxios.cache) == null ? void 0 : _g.set(options.url, responseData == null ? void 0 : responseData.data);
         }
         if (options.simpleDataFormat) {
           return Promise.resolve(responseData == null ? void 0 : responseData.data);
@@ -219,18 +220,18 @@ const createAxios = (axiosConfig) => {
     async (error) => {
       var _a2, _b, _c, _d;
       removePending(pendingKey);
-      options.loading && ((_a2 = uAxios.loading) == null ? void 0 : _a2.close(options));
+      options.loading && ((_a2 = fastAxios.loading) == null ? void 0 : _a2.close(options));
       if (axios.isCancel(error)) {
         console.warn(`[Fast.Axios] ${errorCodeMessages["cancelDuplicate"]}`);
         return Promise.reject();
       }
       if (!globalThis.navigator.onLine) {
-        (_b = uAxios.message) == null ? void 0 : _b.error(errorCodeMessages["offLine"]);
+        (_b = fastAxios.message) == null ? void 0 : _b.error(errorCodeMessages["offLine"]);
         return Promise.reject();
       }
-      if ((_c = uAxios.interceptors) == null ? void 0 : _c.responseError) {
+      if ((_c = fastAxios.interceptors) == null ? void 0 : _c.responseError) {
         try {
-          const result = uAxios.interceptors.responseError(error, options);
+          const result = fastAxios.interceptors.responseError(error, options);
           if (!isNil(result)) {
             return Promise.reject(result);
           }
@@ -241,7 +242,7 @@ const createAxios = (axiosConfig) => {
       }
       if (options.showErrorMessage) {
         const message = await httpErrorStatusHandle(error);
-        (_d = uAxios.message) == null ? void 0 : _d.error(message);
+        (_d = fastAxios.message) == null ? void 0 : _d.error(message);
       }
       console.error("[Fast.Axios]", error);
       return Promise.reject(error);
@@ -263,6 +264,7 @@ const axiosUtil = {
 };
 export {
   axiosUtil,
-  useAxios
+  createFastAxios,
+  useFastAxios
 };
 //# sourceMappingURL=index.mjs.map

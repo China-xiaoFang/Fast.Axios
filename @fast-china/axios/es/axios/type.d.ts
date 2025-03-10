@@ -103,7 +103,7 @@ export type FastAxiosRequestConfig<Input> = AxiosRequestConfig<Input> & {
      */
     requestType: RequestType;
 } & AxiosOptions;
-export type UseAxiosType = {
+export type FastAxiosOption = {
     /** 请求域名或者Base路径 */
     baseUrl?: string;
     /**

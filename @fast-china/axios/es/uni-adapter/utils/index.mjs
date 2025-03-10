@@ -1,7 +1,7 @@
 import { AxiosHeaders } from "axios";
-import buildFullPath from "../../node_modules/.pnpm/axios@1.7.2/node_modules/axios/lib/core/buildFullPath.mjs";
-import buildURL from "../../node_modules/.pnpm/axios@1.7.2/node_modules/axios/lib/helpers/buildURL.mjs";
-import speedometer from "../../node_modules/.pnpm/axios@1.7.2/node_modules/axios/lib/helpers/speedometer.mjs";
+import buildFullPath from "../../node_modules/.pnpm/axios@1.8.2/node_modules/axios/lib/core/buildFullPath.mjs";
+import buildURL from "../../node_modules/.pnpm/axios@1.8.2/node_modules/axios/lib/helpers/buildURL.mjs";
+import speedometer from "../../node_modules/.pnpm/axios@1.8.2/node_modules/axios/lib/helpers/speedometer.mjs";
 const getMethodType = (config) => {
   const { method: rawMethod = "GET" } = config;
   const method = rawMethod.toLocaleLowerCase();

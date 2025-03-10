@@ -1,5 +1,5 @@
 import { AxiosHeaders, AxiosError } from "axios";
-import settle from "../../node_modules/.pnpm/axios@1.7.2/node_modules/axios/lib/core/settle.mjs";
+import settle from "../../node_modules/.pnpm/axios@1.8.2/node_modules/axios/lib/core/settle.mjs";
 import { resolveUniAppRequestOptions, progressEventReducer } from "../utils/index.mjs";
 import OnCanceled from "./onCanceled.mjs";
 const download = (config) => {

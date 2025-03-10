@@ -1,7 +1,7 @@
 {
   "name": "@fast-china/axios",
   "author": "小方",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Fast Axios 请求工具库.",
   "type": "module",
   "keywords": [
@@ -85,20 +85,20 @@
     "./lib"
   ],
   "peerDependencies": {
-    "axios": "1.7.2"
+    "axios": "^1.8.2"
   },
   "dependencies": {
-    "@types/lodash": "^4.17.14",
-    "@types/lodash-es": "^4.17.12",
-    "local-pkg": "^1.0.0",
+    "@types/lodash": "latest",
+    "@types/lodash-es": "latest",
+    "local-pkg": "^1.1.1",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "lodash-unified": "^1.0.3",
-    "unplugin": "^2.1.2"
+    "unplugin": "^2.2.0"
   },
   "devDependencies": {
-    "@dcloudio/types": "*",
-    "@types/node": "*",
-    "axios": "1.7.2"
+    "@dcloudio/types": "latest",
+    "@types/node": "latest",
+    "axios": "^1.8.2"
   }
 }
