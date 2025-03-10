@@ -1,8 +1,8 @@
 import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import axios, { AxiosError } from "axios";
 import { isNil, isObject, isString } from "lodash-unified";
+import { useFastAxios } from "./fastAxios";
 import type { ApiResponse, AxiosOptions, FastAxiosRequestConfig } from "./type";
-import { useAxios } from "./useAxios";
 import { createUniAppAxiosAdapter } from "../uni-adapter";
 
 const axiosOptions: AxiosOptions = {
@@ -137,13 +137,13 @@ const downloadFile = (response: AxiosResponse): void => {
  * @param loading loading配置
  */
 const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestConfig<Input>): Promise<Output> => {
-	const uAxios = useAxios();
+	const fastAxios = useFastAxios();
 
 	// 合并选项
 	const options = { ...axiosOptions, ...axiosConfig };
 
 	if (isNil(options.requestCipher)) {
-		options.requestCipher = uAxios.requestCipher;
+		options.requestCipher = fastAxios.requestCipher;
 	}
 
 	// 只有Get请求并且开启了简洁响应才可以进行缓存处理，且默认是不存在loading的
@@ -153,8 +153,8 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 			console.warn("[Fast.Axios] 如果使用 Http Cache，则不能存在任何 'params' 参数");
 		}
 
-		if (uAxios.cache?.get) {
-			const cacheRes = uAxios.cache.get(options.url);
+		if (fastAxios.cache?.get) {
+			const cacheRes = fastAxios.cache.get(options.url);
 			if (cacheRes) {
 				return Promise.resolve(cacheRes);
 			}
@@ -173,10 +173,10 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 	const Axios = axios.create({
 		/** 如果是 UniApp 则默认使用适配器 */
 		adapter: typeof uni !== "undefined" ? createUniAppAxiosAdapter() : undefined,
-		baseURL: uAxios.baseUrl,
-		timeout: uAxios.timeout,
+		baseURL: fastAxios.baseUrl,
+		timeout: fastAxios.timeout,
 		headers: {
-			...uAxios.headers,
+			...fastAxios.headers,
 		},
 		responseType: "json",
 	});
@@ -193,15 +193,15 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 			options.cancelDuplicateRequest && addPending(pendingKey, config);
 
 			// 自定义请求拦截器
-			uAxios.interceptors?.request(config);
+			fastAxios.interceptors?.request(config);
 
 			// 判断是否显示loading层
-			options.loading && uAxios.loading?.show(options.loadingText);
+			options.loading && fastAxios.loading?.show(options.loadingText);
 
 			if (config.responseType === "json") {
 				// 请求参数加密
 				if (options.requestCipher) {
-					uAxios.crypto?.encrypt(config, timestamp);
+					fastAxios.crypto?.encrypt(config, timestamp);
 				} else {
 					// Get请求缓存处理
 					if (options.getMethodCacheHandle && config.method.toUpperCase() === "GET") {
@@ -228,12 +228,12 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 			removePending(pendingKey);
 
 			// 关闭loading层
-			options.loading && uAxios.loading?.close(options);
+			options.loading && fastAxios.loading?.close(options);
 
 			// 自定义响应拦截器
-			if (uAxios.interceptors?.response) {
+			if (fastAxios.interceptors?.response) {
 				try {
-					const result = uAxios.interceptors.response(response, options);
+					const result = fastAxios.interceptors.response(response, options);
 					if (!isNil(result)) {
 						return Promise.resolve(result);
 					}
@@ -252,7 +252,7 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 					// 这里直接返回
 					return Promise.resolve(response);
 				} else {
-					uAxios.message?.error(errorCodeMessages["fileDownloadError"]);
+					fastAxios.message?.error(errorCodeMessages["fileDownloadError"]);
 					return Promise.reject(response);
 				}
 			} else if (response.config.responseType === "json") {
@@ -266,9 +266,9 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 							// 判断返回的 message 是否为对象类型
 							if (restfulData?.message) {
 								if (isObject(restfulData?.message)) {
-									uAxios.message?.error(JSON.stringify(restfulData?.message));
+									fastAxios.message?.error(JSON.stringify(restfulData?.message));
 								} else {
-									uAxios.message?.error(restfulData?.message);
+									fastAxios.message?.error(restfulData?.message);
 								}
 							}
 						}
@@ -279,12 +279,12 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 
 				// 请求响应解密
 				if (options.requestCipher) {
-					responseData = uAxios.crypto?.decrypt(response, options);
+					responseData = fastAxios.crypto?.decrypt(response, options);
 				}
 
 				// 判断是否缓存
 				if (options.cache && options.restfulResult && options.simpleDataFormat) {
-					uAxios.cache?.set(options.url, (responseData as ApiResponse<Output, Input>)?.data);
+					fastAxios.cache?.set(options.url, (responseData as ApiResponse<Output, Input>)?.data);
 				}
 
 				if (options.simpleDataFormat) {
@@ -305,7 +305,7 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 			removePending(pendingKey);
 
 			// 关闭loading层
-			options.loading && uAxios.loading?.close(options);
+			options.loading && fastAxios.loading?.close(options);
 
 			// 判断请求是否被取消
 			if (axios.isCancel(error)) {
@@ -315,14 +315,14 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 
 			// 判断是否断网
 			if (!globalThis.navigator.onLine) {
-				uAxios.message?.error(errorCodeMessages["offLine"]);
+				fastAxios.message?.error(errorCodeMessages["offLine"]);
 				return Promise.reject();
 			}
 
 			// 自定义响应错误拦截器
-			if (uAxios.interceptors?.responseError) {
+			if (fastAxios.interceptors?.responseError) {
 				try {
-					const result = uAxios.interceptors.responseError(error, options);
+					const result = fastAxios.interceptors.responseError(error, options);
 					if (!isNil(result)) {
 						return Promise.reject(result);
 					}
@@ -335,7 +335,7 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 			// 处理错误状态码
 			if (options.showErrorMessage) {
 				const message = await httpErrorStatusHandle(error);
-				uAxios.message?.error(message);
+				fastAxios.message?.error(message);
 			}
 
 			// 错误继续返回给到具体页面
@@ -361,4 +361,4 @@ export const axiosUtil = {
 };
 
 export * from "./type";
-export * from "./useAxios";
+export * from "./fastAxios";
