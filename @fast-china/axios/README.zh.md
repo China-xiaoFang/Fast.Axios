@@ -56,6 +56,40 @@ pnpm install @fast-china/axios
 </head>
 ```
 
+## 使用
+
+```typescript
+import { createFastAxios, useFastAxios } from "@fast-china/axios";
+import { ElMessage } from "element-plus";
+
+// 初始化 FastAxios（单例模式）
+const fastAxios = createFastAxios({
+  baseUrl: "",
+  timeout: 60000,
+  headers: {
+    "authorization": ""
+  },
+  requestCipher: true
+});
+
+// 设置消息提示。
+fastAxios.message.success.use((message) => ElMessage.success(message));
+fastAxios.message.warning.use((message) => ElMessage.warning(message));
+fastAxios.message.info.use((message) => ElMessage.info(message));
+fastAxios.message.error.use((message) => ElMessage.error(message));
+
+// 使用 FastAxios 选项，或多次设置请使用一下方式。
+const uFastAxios = useFastAxios();
+
+console.log(uFastAxios.baseUrl);
+
+// 设置消息提示。
+uFastAxios.message.success.use((message) => ElMessage.success(message));
+uFastAxios.message.warning.use((message) => ElMessage.warning(message));
+uFastAxios.message.info.use((message) => ElMessage.info(message));
+uFastAxios.message.error.use((message) => ElMessage.error(message));
+```
+
 ## 更新日志
 
 更新日志 [点击查看](https://gitee.com/China-xiaoFang/fast.axios/commits/master)

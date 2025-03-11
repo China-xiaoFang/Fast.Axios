@@ -1,0 +1,2 @@
+"use strict";var e=Object.defineProperty,s=(s,t,o)=>((s,t,o)=>t in s?e(s,t,{enumerable:!0,configurable:!0,writable:!0,value:o}):s[t]=o)(s,"symbol"!=typeof t?t+"":t,o);Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});exports.LoadingManage=class{constructor(){s(this,"_handle"),s(this,"show"),s(this,"close"),this._handle={show:e=>{},close:e=>{}};const e=e=>{this._handle.show(e)};e.use=e=>{this._handle.show=e},this.show=e;const t=e=>{this._handle.close(e)};t.use=e=>{this._handle.close=e},this.close=t}};
+//# sourceMappingURL=loading.js.map

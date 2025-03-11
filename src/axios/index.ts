@@ -2,7 +2,7 @@ import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } fr
 import axios, { AxiosError } from "axios";
 import { isNil, isObject, isString } from "lodash-unified";
 import { useFastAxios } from "./fastAxios";
-import type { ApiResponse, AxiosOptions, FastAxiosRequestConfig } from "./type";
+import type { ApiResponse, AxiosOptions, FastAxiosRequestConfig } from "./types";
 import { createUniAppAxiosAdapter } from "../uni-adapter";
 
 const axiosOptions: AxiosOptions = {
@@ -16,32 +16,6 @@ const axiosOptions: AxiosOptions = {
 	showCodeMessage: true,
 	autoDownloadFile: true,
 	restfulResult: true,
-};
-
-const errorCodeMessages = {
-	cancelDuplicate: "重复请求，自动取消！",
-	offLine: "您断网了！",
-	fileDownloadError: "文件下载失败或此文件不存在！",
-	302: "接口重定向了！",
-	400: "参数不正确！",
-	401: "您没有权限操作（令牌、用户名、密码错误）！",
-	403: "您的访问是被禁止的！",
-	404: "请求的资源不存在！",
-	405: "请求的格式不正确！",
-	408: "请求超时！",
-	409: "系统已存在相同数据！",
-	410: "请求的资源被永久删除，且不会再得到的！",
-	422: "当创建一个对象时，发生一个验证错误！",
-	429: "请求过于频繁，请稍后再试！",
-	500: "服务器内部错误！",
-	501: "服务未实现！",
-	502: "网关错误！",
-	503: "服务不可用，服务器暂时过载或维护！",
-	504: "服务暂时无法访问，请稍后再试！",
-	505: "HTTP版本不受支持！",
-	[AxiosError.ETIMEDOUT]: "请求超时！",
-	[AxiosError.ECONNABORTED]: "连接中断，服务器暂时过载或维护！",
-	[AxiosError.ERR_NETWORK]: "网关错误，服务不可用，服务器暂时过载或维护！",
 };
 
 const pendingMap = new Map();
@@ -96,10 +70,10 @@ const httpErrorStatusHandle = async (error: AxiosError | any): Promise<string> =
 		try {
 			message = JSON.parse(await error?.response?.data?.text())?.message;
 		} catch (err) {
-			message = error?.response?.data?.message || errorCodeMessages[code];
+			message = error?.response?.data?.message || useFastAxios().errorCode[code];
 		}
 	} else {
-		message = error?.response?.data?.message || errorCodeMessages[code];
+		message = error?.response?.data?.message || useFastAxios().errorCode[code];
 	}
 	return message;
 };
@@ -175,9 +149,7 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 		adapter: typeof uni !== "undefined" ? createUniAppAxiosAdapter() : undefined,
 		baseURL: fastAxios.baseUrl,
 		timeout: fastAxios.timeout,
-		headers: {
-			...fastAxios.headers,
-		},
+		headers: fastAxios.headers,
 		responseType: "json",
 	});
 
@@ -252,7 +224,7 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 					// 这里直接返回
 					return Promise.resolve(response);
 				} else {
-					fastAxios.message?.error(errorCodeMessages["fileDownloadError"]);
+					fastAxios.message?.error(fastAxios.errorCode["fileDownloadError"]);
 					return Promise.reject(response);
 				}
 			} else if (response.config.responseType === "json") {
@@ -309,13 +281,13 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 
 			// 判断请求是否被取消
 			if (axios.isCancel(error)) {
-				console.warn(`[Fast.Axios] ${errorCodeMessages["cancelDuplicate"]}`);
+				console.warn(`[Fast.Axios] ${fastAxios.errorCode["cancelDuplicate"]}`);
 				return Promise.reject();
 			}
 
 			// 判断是否断网
 			if (!globalThis.navigator.onLine) {
-				fastAxios.message?.error(errorCodeMessages["offLine"]);
+				fastAxios.message?.error(fastAxios.errorCode["offLine"]);
 				return Promise.reject();
 			}
 
@@ -360,5 +332,5 @@ export const axiosUtil = {
 	downloadFile,
 };
 
-export * from "./type";
+export * from "./types/options";
 export * from "./fastAxios";

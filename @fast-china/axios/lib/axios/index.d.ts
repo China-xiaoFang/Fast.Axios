@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { FastAxiosRequestConfig } from './type';
+import { FastAxiosRequestConfig } from './types';
 export declare const axiosUtil: {
     /**
      * 请求
@@ -12,5 +12,5 @@ export declare const axiosUtil: {
      */
     downloadFile: (response: AxiosResponse) => void;
 };
-export * from './type';
+export * from './types/options';
 export * from './fastAxios';

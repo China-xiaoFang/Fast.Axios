@@ -3,7 +3,7 @@ import { isString, isNil, isObject } from "lodash-unified";
 import { useFastAxios } from "./fastAxios.mjs";
 import { createFastAxios } from "./fastAxios.mjs";
 import { createUniAppAxiosAdapter } from "../uni-adapter/index.mjs";
-import "./type.mjs";
+import "./types/options.mjs";
 const axiosOptions = {
   cancelDuplicateRequest: true,
   loading: false,
@@ -15,31 +15,6 @@ const axiosOptions = {
   showCodeMessage: true,
   autoDownloadFile: true,
   restfulResult: true
-};
-const errorCodeMessages = {
-  cancelDuplicate: "重复请求，自动取消！",
-  offLine: "您断网了！",
-  fileDownloadError: "文件下载失败或此文件不存在！",
-  302: "接口重定向了！",
-  400: "参数不正确！",
-  401: "您没有权限操作（令牌、用户名、密码错误）！",
-  403: "您的访问是被禁止的！",
-  404: "请求的资源不存在！",
-  405: "请求的格式不正确！",
-  408: "请求超时！",
-  409: "系统已存在相同数据！",
-  410: "请求的资源被永久删除，且不会再得到的！",
-  422: "当创建一个对象时，发生一个验证错误！",
-  429: "请求过于频繁，请稍后再试！",
-  500: "服务器内部错误！",
-  501: "服务未实现！",
-  502: "网关错误！",
-  503: "服务不可用，服务器暂时过载或维护！",
-  504: "服务暂时无法访问，请稍后再试！",
-  505: "HTTP版本不受支持！",
-  [AxiosError.ETIMEDOUT]: "请求超时！",
-  [AxiosError.ECONNABORTED]: "连接中断，服务器暂时过载或维护！",
-  [AxiosError.ERR_NETWORK]: "网关错误，服务不可用，服务器暂时过载或维护！"
 };
 const pendingMap = /* @__PURE__ */ new Map();
 const getPendingKey = (axiosConfig) => {
@@ -70,10 +45,10 @@ const httpErrorStatusHandle = async (error) => {
     try {
       message = (_g = JSON.parse(await ((_f = (_e = error == null ? void 0 : error.response) == null ? void 0 : _e.data) == null ? void 0 : _f.text()))) == null ? void 0 : _g.message;
     } catch (err) {
-      message = ((_i = (_h = error == null ? void 0 : error.response) == null ? void 0 : _h.data) == null ? void 0 : _i.message) || errorCodeMessages[code];
+      message = ((_i = (_h = error == null ? void 0 : error.response) == null ? void 0 : _h.data) == null ? void 0 : _i.message) || useFastAxios().errorCode[code];
     }
   } else {
-    message = ((_k = (_j = error == null ? void 0 : error.response) == null ? void 0 : _j.data) == null ? void 0 : _k.message) || errorCodeMessages[code];
+    message = ((_k = (_j = error == null ? void 0 : error.response) == null ? void 0 : _j.data) == null ? void 0 : _k.message) || useFastAxios().errorCode[code];
   }
   return message;
 };
@@ -124,9 +99,7 @@ const createAxios = (axiosConfig) => {
     adapter: typeof uni !== "undefined" ? createUniAppAxiosAdapter() : void 0,
     baseURL: fastAxios.baseUrl,
     timeout: fastAxios.timeout,
-    headers: {
-      ...fastAxios.headers
-    },
+    headers: fastAxios.headers,
     responseType: "json"
   });
   Axios.interceptors.request.use(
@@ -176,7 +149,7 @@ const createAxios = (axiosConfig) => {
           }
           return Promise.resolve(response);
         } else {
-          (_c = fastAxios.message) == null ? void 0 : _c.error(errorCodeMessages["fileDownloadError"]);
+          (_c = fastAxios.message) == null ? void 0 : _c.error(fastAxios.errorCode["fileDownloadError"]);
           return Promise.reject(response);
         }
       } else if (response.config.responseType === "json") {
@@ -222,11 +195,11 @@ const createAxios = (axiosConfig) => {
       removePending(pendingKey);
       options.loading && ((_a2 = fastAxios.loading) == null ? void 0 : _a2.close(options));
       if (axios.isCancel(error)) {
-        console.warn(`[Fast.Axios] ${errorCodeMessages["cancelDuplicate"]}`);
+        console.warn(`[Fast.Axios] ${fastAxios.errorCode["cancelDuplicate"]}`);
         return Promise.reject();
       }
       if (!globalThis.navigator.onLine) {
-        (_b = fastAxios.message) == null ? void 0 : _b.error(errorCodeMessages["offLine"]);
+        (_b = fastAxios.message) == null ? void 0 : _b.error(fastAxios.errorCode["offLine"]);
         return Promise.reject();
       }
       if ((_c = fastAxios.interceptors) == null ? void 0 : _c.responseError) {

@@ -56,6 +56,40 @@ pnpm install @fast-china/axios
 </head>
 ```
 
+## Use
+
+```typescript
+import { createFastAxios, useFastAxios } from "@fast-china/axios";
+import { ElMessage } from "element-plus";
+
+// Initialize FastAxios (singleton mode)
+const fastAxios = createFastAxios({
+  baseUrl: "",
+  timeout: 60000,
+  headers: {
+    "authorization": ""
+  },
+  requestCipher: true
+});
+
+// Set message prompt.
+fastAxios.message.success.use((message) => ElMessage.success(message));
+fastAxios.message.warning.use((message) => ElMessage.warning(message));
+fastAxios.message.info.use((message) => ElMessage.info(message));
+fastAxios.message.error.use((message) => ElMessage.error(message));
+
+// Use FastAxios options, or use the following method to set multiple times.
+const uFastAxios = useFastAxios();
+
+console.log(uFastAxios.baseUrl);
+
+// Set message prompts.
+uFastAxios.message.success.use((message) => ElMessage.success(message));
+uFastAxios.message.warning.use((message) => ElMessage.warning(message));
+uFastAxios.message.info.use((message) => ElMessage.info(message));
+uFastAxios.message.error.use((message) => ElMessage.error(message));
+```
+
 ## Update log
 
 Update log [Click to view](https://gitee.com/China-xiaoFang/fast.axios/commits/master)
