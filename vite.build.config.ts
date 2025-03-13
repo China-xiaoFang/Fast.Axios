@@ -22,7 +22,6 @@ const removedDevDependencies = [
 	"prettier",
 	"terser",
 	"tsup",
-	"tsx",
 	"typescript",
 	"vite",
 	"vite-plugin-dts",
