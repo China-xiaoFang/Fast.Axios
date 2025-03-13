@@ -64,7 +64,7 @@ importers:
         specifier: ^2.30.0
         version: 2.31.0(@typescript-eslint/parser@8.26.0(eslint@8.57.1)(typescript@5.8.2))(eslint@8.57.1)
       eslint-plugin-prettier:
-        specifier: ^5.2.1
+        specifier: ^5.2.3
         version: 5.2.3(eslint-config-prettier@10.1.1(eslint@8.57.1))(eslint@8.57.1)(prettier@3.5.3)
       eslint-plugin-vue:
         specifier: ^10.0.0
