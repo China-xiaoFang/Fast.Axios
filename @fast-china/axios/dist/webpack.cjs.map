@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/webpack.ts"],"names":["unplugin"],"mappings":";;;;;AAEA,IAAO,kBAAQA,0BAAS,CAAA","file":"webpack.cjs","sourcesContent":["import { unplugin } from \"./unplugin\";\n\nexport default unplugin.webpack;\n"]}
