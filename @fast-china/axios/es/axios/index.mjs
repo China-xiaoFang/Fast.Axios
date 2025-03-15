@@ -1,8 +1,8 @@
 import axios, { AxiosError } from "axios";
 import { isString, isNil, isObject } from "lodash-unified";
+import { createUniAppAxiosAdapter } from "../uni-adapter/index.mjs";
 import { useFastAxios } from "./fastAxios.mjs";
 import { createFastAxios } from "./fastAxios.mjs";
-import { createUniAppAxiosAdapter } from "../uni-adapter/index.mjs";
 import "./types/options.mjs";
 const axiosOptions = {
   cancelDuplicateRequest: true,

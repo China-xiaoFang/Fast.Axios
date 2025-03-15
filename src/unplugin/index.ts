@@ -1,7 +1,7 @@
 import process from "node:process";
 import { isPackageExists } from "local-pkg";
-import type { Thenable, TransformResult } from "unplugin";
 import { createUnplugin } from "unplugin";
+import type { Thenable, TransformResult } from "unplugin";
 
 export const unplugin = createUnplugin(() => {
 	const hasFormDataPolyfill = isPackageExists("miniprogram-formdata");

@@ -1,9 +1,9 @@
-import type { AxiosRequestConfig } from "axios";
-import type { Method } from "../type";
 import { getMethodType } from "../utils";
 import download from "./download";
 import request from "./request";
 import upload from "./upload";
+import type { Method } from "../type";
+import type { AxiosRequestConfig } from "axios";
 
 export const getMethod = (config: AxiosRequestConfig): Method => {
 	const methodType = getMethodType(config);

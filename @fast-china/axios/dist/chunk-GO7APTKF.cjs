@@ -1,16 +1,22 @@
-import process from 'node:process';
-import { isPackageExists } from 'local-pkg';
-import { createUnplugin } from 'unplugin';
+'use strict';
+
+var process = require('process');
+var localPkg = require('local-pkg');
+var unplugin$1 = require('unplugin');
+
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
+
+var process__default = /*#__PURE__*/_interopDefault(process);
 
 // src/unplugin/index.ts
-var unplugin = createUnplugin(() => {
-  const hasFormDataPolyfill = isPackageExists("miniprogram-formdata");
-  const hasBlobPolyfill = isPackageExists("miniprogram-blob");
+var unplugin = unplugin$1.createUnplugin(() => {
+  const hasFormDataPolyfill = localPkg.isPackageExists("miniprogram-formdata");
+  const hasBlobPolyfill = localPkg.isPackageExists("miniprogram-blob");
   return {
     name: "unplugin-uni-axios-adapter",
     enforce: "pre",
     transform(code, id) {
-      if (process.env.UNI_PLATFORM?.includes("mp")) {
+      if (process__default.default.env.UNI_PLATFORM?.includes("mp")) {
         if (id.includes("/form-data/lib/browser.js")) {
           return {
             code: code.replace("window", "globalThis")
@@ -33,6 +39,6 @@ export default Blob;`
   };
 });
 
-export { unplugin };
-//# sourceMappingURL=chunk-D352PFRL.js.map
-//# sourceMappingURL=chunk-D352PFRL.js.map
+exports.unplugin = unplugin;
+//# sourceMappingURL=chunk-GO7APTKF.cjs.map
+//# sourceMappingURL=chunk-GO7APTKF.cjs.map

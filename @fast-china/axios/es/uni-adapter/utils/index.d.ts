@@ -1,5 +1,5 @@
-import { AxiosProgressEvent, AxiosRequestConfig } from 'axios';
 import { MethodType, UniNetworkRequestWithoutCallback } from '../type';
+import { AxiosProgressEvent, AxiosRequestConfig } from 'axios';
 /**
  * 获取请求方法
  */

@@ -1,10 +1,10 @@
-import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { AxiosError, AxiosHeaders } from "axios";
 // @ts-expect-error ignore
 import settle from "axios/unsafe/core/settle";
-import type { Method } from "../type";
 import { resolveUniAppRequestOptions } from "../utils";
 import OnCanceled from "./onCanceled";
+import type { Method } from "../type";
+import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 const upload: Method = (config) => {
 	return new Promise((resolve, reject) => {

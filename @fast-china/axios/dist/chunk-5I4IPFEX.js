@@ -1,22 +1,16 @@
-'use strict';
-
-var process = require('process');
-var localPkg = require('local-pkg');
-var unplugin$1 = require('unplugin');
-
-function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
-
-var process__default = /*#__PURE__*/_interopDefault(process);
+import process from 'node:process';
+import { isPackageExists } from 'local-pkg';
+import { createUnplugin } from 'unplugin';
 
 // src/unplugin/index.ts
-var unplugin = unplugin$1.createUnplugin(() => {
-  const hasFormDataPolyfill = localPkg.isPackageExists("miniprogram-formdata");
-  const hasBlobPolyfill = localPkg.isPackageExists("miniprogram-blob");
+var unplugin = createUnplugin(() => {
+  const hasFormDataPolyfill = isPackageExists("miniprogram-formdata");
+  const hasBlobPolyfill = isPackageExists("miniprogram-blob");
   return {
     name: "unplugin-uni-axios-adapter",
     enforce: "pre",
     transform(code, id) {
-      if (process__default.default.env.UNI_PLATFORM?.includes("mp")) {
+      if (process.env.UNI_PLATFORM?.includes("mp")) {
         if (id.includes("/form-data/lib/browser.js")) {
           return {
             code: code.replace("window", "globalThis")
@@ -39,6 +33,6 @@ export default Blob;`
   };
 });
 
-exports.unplugin = unplugin;
-//# sourceMappingURL=chunk-G2NXYF2V.cjs.map
-//# sourceMappingURL=chunk-G2NXYF2V.cjs.map
+export { unplugin };
+//# sourceMappingURL=chunk-5I4IPFEX.js.map
+//# sourceMappingURL=chunk-5I4IPFEX.js.map

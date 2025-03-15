@@ -1,5 +1,5 @@
-import { AxiosResponse } from 'axios';
 import { FastAxiosRequestConfig } from './types';
+import { AxiosResponse } from 'axios';
 export declare const axiosUtil: {
     /**
      * 请求

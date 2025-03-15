@@ -1,7 +1,7 @@
 {
   "name": "@fast-china/axios",
   "author": "小方",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Fast Axios 请求工具库.",
   "type": "module",
   "keywords": [
@@ -98,6 +98,7 @@
   },
   "devDependencies": {
     "@dcloudio/types": "latest",
+    "@fast-china/eslint-config": "^1.0.3",
     "@types/node": "latest",
     "axios": "^1.8.3"
   }

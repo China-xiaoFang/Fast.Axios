@@ -1,5 +1,5 @@
-import { AxiosHeaderValue } from 'axios';
 import { CacheManage, CryptoManage, InterceptorsManage, LoadingManage, MessageBoxManage, MessageManage } from './types';
+import { AxiosHeaderValue } from 'axios';
 type InitializeOptions = Partial<Pick<FastAxios, "baseUrl" | "timeout" | "headers" | "requestCipher">>;
 type CodeKeyType = string | number;
 declare class FastAxios {

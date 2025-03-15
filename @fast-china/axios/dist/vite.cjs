@@ -1,9 +1,9 @@
 'use strict';
 
-var chunkG2NXYF2V_cjs = require('./chunk-G2NXYF2V.cjs');
+var chunkGO7APTKF_cjs = require('./chunk-GO7APTKF.cjs');
 
 // src/vite.ts
-var vite_default = chunkG2NXYF2V_cjs.unplugin.vite;
+var vite_default = chunkGO7APTKF_cjs.unplugin.vite;
 
 module.exports = vite_default;
 //# sourceMappingURL=vite.cjs.map

@@ -1,7 +1,7 @@
-import type { AxiosHeaderValue } from "axios";
 import { AxiosError } from "axios";
 import { isNil } from "lodash-unified";
 import { CacheManage, CryptoManage, InterceptorsManage, LoadingManage, MessageBoxManage, MessageManage } from "./types";
+import type { AxiosHeaderValue } from "axios";
 
 // eslint-disable-next-line no-use-before-define
 type InitializeOptions = Partial<Pick<FastAxios, "baseUrl" | "timeout" | "headers" | "requestCipher">>;

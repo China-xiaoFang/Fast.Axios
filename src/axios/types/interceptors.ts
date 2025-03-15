@@ -1,5 +1,5 @@
-import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import type { FastAxiosRequestConfig } from "./options";
+import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 type InterceptorsRequestHandle = <Input = any>(config: InternalAxiosRequestConfig<Input>) => void;
 type InterceptorsRequestUseHandle = { use: (fn: InterceptorsRequestHandle) => void };

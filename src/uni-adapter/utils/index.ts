@@ -1,4 +1,3 @@
-import type { AxiosProgressEvent, AxiosRequestConfig } from "axios";
 import { AxiosHeaders } from "axios";
 // @ts-expect-error ignore
 import buildFullPath from "axios/unsafe/core/buildFullPath";
@@ -7,6 +6,7 @@ import buildURL from "axios/unsafe/helpers/buildURL";
 // @ts-expect-error ignore
 import speedometer from "axios/unsafe/helpers/speedometer";
 import type { MethodType, UniNetworkRequestWithoutCallback } from "../type";
+import type { AxiosProgressEvent, AxiosRequestConfig } from "axios";
 
 /**
  * 获取请求方法

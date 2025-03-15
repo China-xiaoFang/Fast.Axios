@@ -1,5 +1,5 @@
-import type { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 import { CanceledError } from "axios";
+import type { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 
 export default class OnCanceled<T> {
 	config: AxiosRequestConfig<T>;

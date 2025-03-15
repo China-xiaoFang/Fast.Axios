@@ -1,9 +1,9 @@
-import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import axios, { AxiosError } from "axios";
 import { isNil, isObject, isString } from "lodash-unified";
+import { createUniAppAxiosAdapter } from "../uni-adapter";
 import { useFastAxios } from "./fastAxios";
 import type { ApiResponse, AxiosOptions, FastAxiosRequestConfig } from "./types";
-import { createUniAppAxiosAdapter } from "../uni-adapter";
+import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 const axiosOptions: AxiosOptions = {
 	cancelDuplicateRequest: true,

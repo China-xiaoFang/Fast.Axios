@@ -1,5 +1,5 @@
-import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import type { FastAxiosRequestConfig } from "./options";
+import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 type CryptoEncryptHandle = <Input>(config: InternalAxiosRequestConfig<Input>, timestamp: number) => void;
 type CryptoEncryptUseHandle = { use: (fn: CryptoEncryptHandle) => void };

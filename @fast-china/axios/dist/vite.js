@@ -1,4 +1,4 @@
-import { unplugin } from './chunk-D352PFRL.js';
+import { unplugin } from './chunk-5I4IPFEX.js';
 
 // src/vite.ts
 var vite_default = unplugin.vite;
