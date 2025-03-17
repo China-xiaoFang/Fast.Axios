@@ -64,7 +64,7 @@ const newPackageJson = {
 		},
 		"./webpack": {
 			import: "./dist/webpack.js",
-			require: "./dist/webpack .cjs",
+			require: "./dist/webpack.cjs",
 		},
 		"./es": {
 			types: "./es/index.d.ts",

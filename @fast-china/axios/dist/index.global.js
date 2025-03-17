@@ -7364,12 +7364,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     } else {
       const blob = new Blob([response.data], { type: "application/octet-stream;charset=UTF-8" });
       const contentDisposition = response.headers["content-disposition"];
-      const pat = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
-      const result2 = pat.exec(contentDisposition);
+      const result2 = /filename=([^;]+.[^.;]+);*/.exec(contentDisposition);
       const filename = result2[1];
       const downloadElement = document.createElement("a");
       const href = window.URL.createObjectURL(blob);
-      const reg = /^["](.*)["]$/g;
+      const reg = /^"(.*)"$/g;
       downloadElement.style.display = "none";
       downloadElement.href = href;
       downloadElement.download = decodeURI(filename.replace(reg, "$1"));
