@@ -1,6 +1,6 @@
 import terser from "@rollup/plugin-terser";
-import type { ConfigEnv, UserConfig } from "vite";
 import { peerDependencies } from "./vite.build.config";
+import type { ConfigEnv, UserConfig } from "vite";
 
 /** 配置项文档：https://cn.vitejs.dev/config */
 const ViteConfig = (_: ConfigEnv): UserConfig => {

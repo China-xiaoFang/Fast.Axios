@@ -44,7 +44,7 @@ const httpErrorStatusHandle = async (error) => {
   if (((_d = error == null ? void 0 : error.request) == null ? void 0 : _d.responseType) === "blob") {
     try {
       message = (_g = JSON.parse(await ((_f = (_e = error == null ? void 0 : error.response) == null ? void 0 : _e.data) == null ? void 0 : _f.text()))) == null ? void 0 : _g.message;
-    } catch (err) {
+    } catch {
       message = ((_i = (_h = error == null ? void 0 : error.response) == null ? void 0 : _h.data) == null ? void 0 : _i.message) || useFastAxios().errorCode[code];
     }
   } else {

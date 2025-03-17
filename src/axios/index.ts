@@ -69,7 +69,7 @@ const httpErrorStatusHandle = async (error: AxiosError | any): Promise<string> =
 	if (error?.request?.responseType === "blob") {
 		try {
 			message = JSON.parse(await error?.response?.data?.text())?.message;
-		} catch (err) {
+		} catch {
 			message = error?.response?.data?.message || useFastAxios().errorCode[code];
 		}
 	} else {

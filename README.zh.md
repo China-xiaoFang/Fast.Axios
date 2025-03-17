@@ -38,10 +38,10 @@ pnpm install @fast-china/axios
 
 ```html
 <head>
-  <!-- 导入 Axios -->
-  <script src="//unpkg.com/axios@1.7.2"></script>
-  <!-- 导入请求库 -->
-  <script src="//unpkg.com/@fast-china/axios"></script>
+	<!-- 导入 Axios -->
+	<script src="//unpkg.com/axios@1.7.2"></script>
+	<!-- 导入请求库 -->
+	<script src="//unpkg.com/@fast-china/axios"></script>
 </head>
 ```
 
@@ -49,27 +49,27 @@ pnpm install @fast-china/axios
 
 ```html
 <head>
-  <!-- 导入 Axios -->
-  <script src="//cdn.jsdelivr.net/npm/axios@1.7.2"></script>
-  <!-- 导入请求库 -->
-  <script src="//cdn.jsdelivr.net/npm/@fast-china/axios"></script>
+	<!-- 导入 Axios -->
+	<script src="//cdn.jsdelivr.net/npm/axios@1.7.2"></script>
+	<!-- 导入请求库 -->
+	<script src="//cdn.jsdelivr.net/npm/@fast-china/axios"></script>
 </head>
 ```
 
 ## 使用
 
 ```typescript
-import { createFastAxios, useFastAxios } from "@fast-china/axios";
 import { ElMessage } from "element-plus";
+import { createFastAxios, useFastAxios } from "@fast-china/axios";
 
 // 初始化 FastAxios（单例模式）
 const fastAxios = createFastAxios({
-  baseUrl: "",
-  timeout: 60000,
-  headers: {
-    "authorization": ""
-  },
-  requestCipher: true
+	baseUrl: "",
+	timeout: 60000,
+	headers: {
+		authorization: "",
+	},
+	requestCipher: true,
 });
 
 // 设置消息提示。

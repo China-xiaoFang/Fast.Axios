@@ -56,7 +56,7 @@ export const resolveUniAppRequestOptions = (config: AxiosRequestConfig): UniNetw
 	if (data && typeof data === "string") {
 		try {
 			formData = JSON.parse(data);
-		} catch (error) {}
+		} catch {}
 	}
 
 	const header = requestHeaders.toJSON();

@@ -39,32 +39,32 @@ packageJson.version = newVersion;
 
 const newPackageJson = {
 	name: packageJson.name,
-	author: packageJson.author,
 	version: packageJson.version,
 	description: packageJson.description,
 	type: packageJson.type,
 	keywords: packageJson.keywords,
 	license: packageJson.license,
-	publishConfig: packageJson.publishConfig,
 	homepage: packageJson.homepage,
-	repository: packageJson.repository,
 	bugs: packageJson.bugs,
+	repository: packageJson.repository,
+	author: packageJson.author,
+	files: ["./Fast.png", "./LICENSE", "./README.md", "./README.zh.md", "./dist", "./es", "./lib"],
 	main: "lib/index.js",
 	module: "es/index.mjs",
 	types: "es/index.d.ts",
 	exports: {
 		".": {
 			types: "./es/index.d.ts",
-			import: "./es/index.mjs",
 			require: "./lib/index.js",
+			import: "./es/index.mjs",
 		},
 		"./vite": {
-			import: "./dist/vite.js",
 			require: "./dist/vite.cjs",
+			import: "./dist/vite.js",
 		},
 		"./webpack": {
-			import: "./dist/webpack.js",
 			require: "./dist/webpack.cjs",
+			import: "./dist/webpack.js",
 		},
 		"./es": {
 			types: "./es/index.d.ts",
@@ -94,7 +94,7 @@ const newPackageJson = {
 	},
 	unpkg: "dist/index.global.min.js",
 	jsdelivr: "dist/index.global.min.js",
-	files: ["./Fast.png", "./LICENSE", "./README.md", "./README.zh.md", "./dist", "./es", "./lib"],
+	publishConfig: packageJson.publishConfig,
 	peerDependencies: {},
 	dependencies: packageJson.dependencies,
 	devDependencies: {},
@@ -128,8 +128,8 @@ if (Object.keys(newPackageJson.devDependencies).length === 0) {
 }
 
 // 写入 package.json 文件
-fs.writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`, "utf-8");
-fs.writeFileSync(packageProPath, `${JSON.stringify(newPackageJson, null, 2)}\n`, "utf-8");
+fs.writeFileSync(packagePath, `${JSON.stringify(packageJson, null, "\t")}\n`, "utf-8");
+fs.writeFileSync(packageProPath, `${JSON.stringify(newPackageJson, null, "\t")}\n`, "utf-8");
 
 console.log(`
 Update version to v${newVersion} ...

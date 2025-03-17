@@ -9,16 +9,10 @@ const peerDependencies = {
  * 构建删除包
  */
 const removedDevDependencies = [
+	"@fast-china/eslint-config",
 	"@rollup/plugin-terser",
-	"@typescript-eslint/eslint-plugin",
-	"@typescript-eslint/parser",
 	"@vue/tsconfig",
 	"eslint",
-	"eslint-config-prettier",
-	"eslint-define-config",
-	"eslint-plugin-import",
-	"eslint-plugin-prettier",
-	"eslint-plugin-vue",
 	"prettier",
 	"terser",
 	"tsup",

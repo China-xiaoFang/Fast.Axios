@@ -34,7 +34,7 @@ const resolveUniAppRequestOptions = (config) => {
   if (data && typeof data === "string") {
     try {
       formData = JSON.parse(data);
-    } catch (error) {
+    } catch {
     }
   }
   const header = requestHeaders.toJSON();
