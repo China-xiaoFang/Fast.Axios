@@ -7364,7 +7364,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     } else {
       const blob = new Blob([response.data], { type: "application/octet-stream;charset=UTF-8" });
       const contentDisposition = response.headers["content-disposition"];
-      const result2 = /filename=([^;]+.[^.;]+);*/.exec(contentDisposition);
+      const result2 = /filename=([^;]+\.[^.;]+);*/.exec(contentDisposition);
       const filename = result2[1];
       const downloadElement = document.createElement("a");
       const href = window.URL.createObjectURL(blob);

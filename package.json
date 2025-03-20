@@ -1,6 +1,6 @@
 {
 	"name": "@fast-china/axios",
-	"version": "1.0.13",
+	"version": "1.0.14",
 	"description": "Fast Axios 请求工具库.",
 	"type": "module",
 	"keywords": [

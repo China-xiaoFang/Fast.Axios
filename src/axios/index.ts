@@ -87,7 +87,7 @@ const downloadFile = (response: AxiosResponse): void => {
 	} else {
 		const blob = new Blob([response.data], { type: "application/octet-stream;charset=UTF-8" });
 		const contentDisposition = response.headers["content-disposition"];
-		const result = /filename=([^;]+.[^.;]+);*/.exec(contentDisposition);
+		const result = /filename=([^;]+\.[^.;]+);*/.exec(contentDisposition);
 		const filename = result[1];
 		const downloadElement = document.createElement("a");
 		const href = window.URL.createObjectURL(blob); // 创建下载的链接
