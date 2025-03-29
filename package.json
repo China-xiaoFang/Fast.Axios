@@ -1,6 +1,6 @@
 {
 	"name": "@fast-china/axios",
-	"version": "1.0.14",
+	"version": "1.0.15",
 	"description": "Fast Axios 请求工具库.",
 	"type": "module",
 	"keywords": [
@@ -40,21 +40,21 @@
 		"lodash": "^4.17.21",
 		"lodash-es": "^4.17.21",
 		"lodash-unified": "^1.0.3",
-		"unplugin": "^2.2.0"
+		"unplugin": "^2.2"
 	},
 	"devDependencies": {
 		"@dcloudio/types": "latest",
-		"@fast-china/eslint-config": "^1.0.22",
+		"@fast-china/eslint-config": "^1.0.27",
 		"@rollup/plugin-terser": "^0.4.4",
 		"@types/node": "latest",
 		"@vue/tsconfig": "^0.7.0",
 		"axios": "^1.8",
-		"eslint": "^9.22.0",
-		"prettier": "^3.5.3",
+		"eslint": "^9",
+		"prettier": "^3",
 		"terser": "^5.39.0",
-		"tsup": "^8.4.0",
-		"typescript": "^5.8.2",
-		"vite": "^6.2.2",
+		"tsup": "^8",
+		"typescript": "^5",
+		"vite": "^6",
 		"vite-plugin-dts": "^4.5.3",
 		"vue-tsc": "^2.2.8"
 	},

@@ -1,5 +1,5 @@
 import { AxiosHeaders, AxiosError } from "axios";
-import settle from "../../node_modules/.pnpm/axios@1.8.3/node_modules/axios/lib/core/settle.mjs";
+import settle from "../../node_modules/.pnpm/axios@1.8.4/node_modules/axios/lib/core/settle.mjs";
 import { resolveUniAppRequestOptions } from "../utils/index.mjs";
 import OnCanceled from "./onCanceled.mjs";
 const request = (config) => {
