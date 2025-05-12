@@ -5,22 +5,31 @@ type CodeKeyType = string | number;
 declare class FastAxios {
     static instance: FastAxios;
     constructor(options?: InitializeOptions);
+    /**
+     * 设置选项
+     * @param options 初始化选项
+     */
+    setOptions(options: InitializeOptions): FastAxios;
+    private _baseUrl;
     /** 请求域名或者Base路径 */
-    readonly baseUrl: string;
+    get baseUrl(): string;
+    private _timeout;
     /**
      * 超时时间，单位毫秒
      * @default 60000
      */
-    readonly timeout: number;
+    get timeout(): number;
+    private _headers;
     /** 默认头部 */
-    readonly headers: {
+    get headers(): {
         [key: string]: AxiosHeaderValue;
     };
+    private _requestCipher;
     /**
      * 请求加密解密
      * @default true
      */
-    readonly requestCipher: boolean;
+    get requestCipher(): boolean;
     /** 错误Code */
     readonly errorCode: Record<CodeKeyType, string>;
     /** 加载 @description 需要自行处理多次调用的问题 */

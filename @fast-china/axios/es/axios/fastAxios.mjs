@@ -12,20 +12,10 @@ import { CryptoManage } from "./types/crypto.mjs";
 import { InterceptorsManage } from "./types/interceptors.mjs";
 class FastAxios {
   constructor(options) {
-    /** 请求域名或者Base路径 */
-    __publicField(this, "baseUrl");
-    /**
-     * 超时时间，单位毫秒
-     * @default 60000
-     */
-    __publicField(this, "timeout");
-    /** 默认头部 */
-    __publicField(this, "headers");
-    /**
-     * 请求加密解密
-     * @default true
-     */
-    __publicField(this, "requestCipher");
+    __publicField(this, "_baseUrl");
+    __publicField(this, "_timeout");
+    __publicField(this, "_headers");
+    __publicField(this, "_requestCipher");
     /** 错误Code */
     __publicField(this, "errorCode");
     /** 加载 @description 需要自行处理多次调用的问题 */
@@ -40,10 +30,7 @@ class FastAxios {
     __publicField(this, "crypto");
     /** 拦截器 */
     __publicField(this, "interceptors");
-    this.baseUrl = options == null ? void 0 : options.baseUrl;
-    this.timeout = (options == null ? void 0 : options.timeout) ?? 6e4;
-    this.headers = (options == null ? void 0 : options.headers) ?? {};
-    this.requestCipher = isNil(options.requestCipher) ? true : false;
+    this.setOptions(options);
     this.errorCode = {
       cancelDuplicate: "重复请求，自动取消！",
       offLine: "您断网了！",
@@ -75,6 +62,51 @@ class FastAxios {
     this.cache = new CacheManage();
     this.crypto = new CryptoManage();
     this.interceptors = new InterceptorsManage();
+  }
+  /**
+   * 设置选项
+   * @param options 初始化选项
+   */
+  setOptions(options) {
+    if (options == null ? void 0 : options.baseUrl) {
+      this._baseUrl = options.baseUrl;
+    }
+    if (options == null ? void 0 : options.timeout) {
+      this._timeout = options.timeout;
+    } else {
+      this._timeout = this._timeout ?? 6e4;
+    }
+    if (options == null ? void 0 : options.headers) {
+      this._headers = { ...this._headers ?? {}, ...options.headers };
+    }
+    if (!isNil(options == null ? void 0 : options.requestCipher)) {
+      this._requestCipher = options.requestCipher;
+    } else {
+      this._requestCipher = isNil(this._requestCipher) ? true : this._requestCipher;
+    }
+    return this;
+  }
+  /** 请求域名或者Base路径 */
+  get baseUrl() {
+    return this._baseUrl;
+  }
+  /**
+   * 超时时间，单位毫秒
+   * @default 60000
+   */
+  get timeout() {
+    return this._timeout;
+  }
+  /** 默认头部 */
+  get headers() {
+    return this._headers;
+  }
+  /**
+   * 请求加密解密
+   * @default true
+   */
+  get requestCipher() {
+    return this._requestCipher;
   }
   addErrorCode(arg, message) {
     if (typeof arg === "string" || typeof arg === "number") {

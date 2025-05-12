@@ -28,6 +28,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   "use strict";
   const { toString: toString$1 } = Object.prototype;
   const { getPrototypeOf } = Object;
+  const { iterator, toStringTag } = Symbol;
   const kindOf = /* @__PURE__ */ ((cache) => (thing) => {
     const str = toString$1.call(thing);
     return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
@@ -62,7 +63,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       return false;
     }
     const prototype2 = getPrototypeOf(val);
-    return (prototype2 === null || prototype2 === Object.prototype || Object.getPrototypeOf(prototype2) === null) && !(Symbol.toStringTag in val) && !(Symbol.iterator in val);
+    return (prototype2 === null || prototype2 === Object.prototype || Object.getPrototypeOf(prototype2) === null) && !(toStringTag in val) && !(iterator in val);
   };
   const isDate$1 = kindOfTest("Date");
   const isFile = kindOfTest("File");
@@ -209,10 +210,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     };
   })(typeof Uint8Array !== "undefined" && getPrototypeOf(Uint8Array));
   const forEachEntry = (obj, fn) => {
-    const generator = obj && obj[Symbol.iterator];
-    const iterator = generator.call(obj);
+    const generator = obj && obj[iterator];
+    const _iterator = generator.call(obj);
     let result2;
-    while ((result2 = iterator.next()) && !result2.done) {
+    while ((result2 = _iterator.next()) && !result2.done) {
       const pair = result2.value;
       fn.call(obj, pair[0], pair[1]);
     }
@@ -282,7 +283,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return value != null && Number.isFinite(value = +value) ? value : defaultValue;
   };
   function isSpecCompliantForm(thing) {
-    return !!(thing && isFunction$1(thing.append) && thing[Symbol.toStringTag] === "FormData" && thing[Symbol.iterator]);
+    return !!(thing && isFunction$1(thing.append) && thing[toStringTag] === "FormData" && thing[iterator]);
   }
   const toJSONObject = (obj) => {
     const stack = new Array(10);
@@ -328,6 +329,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     isFunction$1(_global.postMessage)
   );
   const asap = typeof queueMicrotask !== "undefined" ? queueMicrotask.bind(_global) : typeof process !== "undefined" && process.nextTick || _setImmediate;
+  const isIterable = (thing) => thing != null && isFunction$1(thing[iterator]);
   const utils = {
     isArray: isArray$1,
     isArrayBuffer: isArrayBuffer$1,
@@ -384,7 +386,8 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     isAsyncFn,
     isThenable,
     setImmediate: _setImmediate,
-    asap
+    asap,
+    isIterable
   };
   "use strict";
   function AxiosError(message, code, config, request2, response) {
@@ -4637,9 +4640,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       return !predicate.apply(this, args);
     };
   }
-  function iteratorToArray(iterator) {
+  function iteratorToArray(iterator2) {
     var data, result2 = [];
-    while (!(data = iterator.next()).done) {
+    while (!(data = iterator2.next()).done) {
       result2.push(data.value);
     }
     return result2;
@@ -7217,20 +7220,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   }
   class FastAxios2 {
     constructor(options) {
-      /** 请求域名或者Base路径 */
-      __publicField(this, "baseUrl");
-      /**
-       * 超时时间，单位毫秒
-       * @default 60000
-       */
-      __publicField(this, "timeout");
-      /** 默认头部 */
-      __publicField(this, "headers");
-      /**
-       * 请求加密解密
-       * @default true
-       */
-      __publicField(this, "requestCipher");
+      __publicField(this, "_baseUrl");
+      __publicField(this, "_timeout");
+      __publicField(this, "_headers");
+      __publicField(this, "_requestCipher");
       /** 错误Code */
       __publicField(this, "errorCode");
       /** 加载 @description 需要自行处理多次调用的问题 */
@@ -7245,10 +7238,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       __publicField(this, "crypto");
       /** 拦截器 */
       __publicField(this, "interceptors");
-      this.baseUrl = options == null ? void 0 : options.baseUrl;
-      this.timeout = (options == null ? void 0 : options.timeout) ?? 6e4;
-      this.headers = (options == null ? void 0 : options.headers) ?? {};
-      this.requestCipher = isNil(options.requestCipher) ? true : false;
+      this.setOptions(options);
       this.errorCode = {
         cancelDuplicate: "重复请求，自动取消！",
         offLine: "您断网了！",
@@ -7280,6 +7270,51 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       this.cache = new CacheManage();
       this.crypto = new CryptoManage();
       this.interceptors = new InterceptorsManage();
+    }
+    /**
+     * 设置选项
+     * @param options 初始化选项
+     */
+    setOptions(options) {
+      if (options == null ? void 0 : options.baseUrl) {
+        this._baseUrl = options.baseUrl;
+      }
+      if (options == null ? void 0 : options.timeout) {
+        this._timeout = options.timeout;
+      } else {
+        this._timeout = this._timeout ?? 6e4;
+      }
+      if (options == null ? void 0 : options.headers) {
+        this._headers = { ...this._headers ?? {}, ...options.headers };
+      }
+      if (!isNil(options == null ? void 0 : options.requestCipher)) {
+        this._requestCipher = options.requestCipher;
+      } else {
+        this._requestCipher = isNil(this._requestCipher) ? true : this._requestCipher;
+      }
+      return this;
+    }
+    /** 请求域名或者Base路径 */
+    get baseUrl() {
+      return this._baseUrl;
+    }
+    /**
+     * 超时时间，单位毫秒
+     * @default 60000
+     */
+    get timeout() {
+      return this._timeout;
+    }
+    /** 默认头部 */
+    get headers() {
+      return this._headers;
+    }
+    /**
+     * 请求加密解密
+     * @default true
+     */
+    get requestCipher() {
+      return this._requestCipher;
     }
     addErrorCode(arg, message) {
       if (typeof arg === "string" || typeof arg === "number") {

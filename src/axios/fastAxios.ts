@@ -13,10 +13,7 @@ class FastAxios {
 	static instance: FastAxios;
 
 	constructor(options?: InitializeOptions) {
-		this.baseUrl = options?.baseUrl;
-		this.timeout = options?.timeout ?? 60000;
-		this.headers = options?.headers ?? {};
-		this.requestCipher = isNil(options.requestCipher) ? true : false;
+		this.setOptions(options);
 
 		this.errorCode = {
 			cancelDuplicate: "重复请求，自动取消！",
@@ -52,25 +49,66 @@ class FastAxios {
 		this.interceptors = new InterceptorsManage();
 	}
 
-	/** 请求域名或者Base路径 */
-	readonly baseUrl: string;
+	/**
+	 * 设置选项
+	 * @param options 初始化选项
+	 */
+	public setOptions(options: InitializeOptions): FastAxios {
+		if (options?.baseUrl) {
+			this._baseUrl = options.baseUrl;
+		}
 
+		if (options?.timeout) {
+			this._timeout = options.timeout;
+		} else {
+			this._timeout = this._timeout ?? 60000;
+		}
+
+		if (options?.headers) {
+			this._headers = { ...(this._headers ?? {}), ...options.headers };
+		}
+
+		if (!isNil(options?.requestCipher)) {
+			this._requestCipher = options.requestCipher;
+		} else {
+			this._requestCipher = isNil(this._requestCipher) ? true : this._requestCipher;
+		}
+		return this;
+	}
+
+	private _baseUrl: string;
+	/** 请求域名或者Base路径 */
+	public get baseUrl(): string {
+		return this._baseUrl;
+	}
+
+	private _timeout: number;
 	/**
 	 * 超时时间，单位毫秒
 	 * @default 60000
 	 */
-	readonly timeout: number;
+	public get timeout(): number {
+		return this._timeout;
+	}
 
-	/** 默认头部 */
-	readonly headers: {
+	private _headers: {
 		[key: string]: AxiosHeaderValue;
 	};
+	/** 默认头部 */
+	public get headers(): {
+		[key: string]: AxiosHeaderValue;
+	} {
+		return this._headers;
+	}
 
+	private _requestCipher: boolean;
 	/**
 	 * 请求加密解密
 	 * @default true
 	 */
-	readonly requestCipher: boolean;
+	public get requestCipher(): boolean {
+		return this._requestCipher;
+	}
 
 	/** 错误Code */
 	readonly errorCode: Record<CodeKeyType, string>;

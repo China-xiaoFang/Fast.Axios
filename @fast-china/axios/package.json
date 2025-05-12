@@ -1,6 +1,6 @@
 {
 	"name": "@fast-china/axios",
-	"version": "1.0.15",
+	"version": "1.0.16",
 	"description": "Fast Axios 请求工具库.",
 	"type": "module",
 	"keywords": [
@@ -85,7 +85,7 @@
 		"access": "public"
 	},
 	"peerDependencies": {
-		"axios": "^1.8"
+		"axios": "^1.9"
 	},
 	"dependencies": {
 		"@types/lodash": "latest",
@@ -94,11 +94,11 @@
 		"lodash": "^4.17.21",
 		"lodash-es": "^4.17.21",
 		"lodash-unified": "^1.0.3",
-		"unplugin": "^2.2"
+		"unplugin": "^2.3"
 	},
 	"devDependencies": {
 		"@dcloudio/types": "latest",
 		"@types/node": "latest",
-		"axios": "^1.8"
+		"axios": "^1.9"
 	}
 }
