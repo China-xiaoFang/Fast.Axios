@@ -1,6 +1,6 @@
 {
 	"name": "@fast-china/axios",
-	"version": "1.0.16",
+	"version": "1.0.17",
 	"description": "Fast Axios 请求工具库.",
 	"type": "module",
 	"keywords": [
@@ -90,10 +90,10 @@
 	"dependencies": {
 		"@types/lodash": "latest",
 		"@types/lodash-es": "latest",
-		"local-pkg": "^1.1.1",
-		"lodash": "^4.17.21",
-		"lodash-es": "^4.17.21",
-		"lodash-unified": "^1.0.3",
+		"local-pkg": "^1",
+		"lodash": "^4.17",
+		"lodash-es": "^4.17",
+		"lodash-unified": "^1",
 		"unplugin": "^2.3"
 	},
 	"devDependencies": {

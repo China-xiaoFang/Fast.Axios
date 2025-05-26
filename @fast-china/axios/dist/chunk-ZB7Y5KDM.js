@@ -1,4 +1,4 @@
-import process from 'node:process';
+import process from 'process';
 import { isPackageExists } from 'local-pkg';
 import { createUnplugin } from 'unplugin';
 
@@ -34,5 +34,5 @@ export default Blob;`
 });
 
 export { unplugin };
-//# sourceMappingURL=chunk-5I4IPFEX.js.map
-//# sourceMappingURL=chunk-5I4IPFEX.js.map
+//# sourceMappingURL=chunk-ZB7Y5KDM.js.map
+//# sourceMappingURL=chunk-ZB7Y5KDM.js.map

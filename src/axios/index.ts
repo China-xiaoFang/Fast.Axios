@@ -107,7 +107,6 @@ const downloadFile = (response: AxiosResponse): void => {
 /**
  * 创建 Axios
  * @param axiosConfig axios 请求配置
- * @param loading loading配置
  */
 const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestConfig<Input>): Promise<Output> => {
 	const fastAxios = useFastAxios();
