@@ -59,12 +59,24 @@ const newPackageJson = {
 			import: "./es/index.mjs",
 		},
 		"./vite": {
-			require: "./dist/vite.cjs",
-			import: "./dist/vite.js",
+			require: {
+				type: "./dist/vite.d.cts",
+				default: "./dist/vite.cjs",
+			},
+			import: {
+				type: "./dist/vite.d.ts",
+				default: "./dist/vite.js",
+			},
 		},
 		"./webpack": {
-			require: "./dist/webpack.cjs",
-			import: "./dist/webpack.js",
+			require: {
+				type: "./dist/webpack.d.cts",
+				default: "./dist/webpack.cjs",
+			},
+			import: {
+				type: "./dist/webpack.d.ts",
+				default: "./dist/webpack.js",
+			},
 		},
 		"./es": {
 			types: "./es/index.d.ts",
