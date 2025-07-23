@@ -1,8 +1,15 @@
+# Mac system files
+.DS_Store
+
 # Package Manager
 node_modules
 
-# System
-.DS_Store
+# Build output
+dist/
+build/
 
-# local env files
+# Npm cache directory
+.npm
+
+# Eslint cache
 .eslintcache
