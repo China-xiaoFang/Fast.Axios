@@ -1,5 +1,5 @@
 import path from "path";
-import { __dirname, __filename, copyFile, npmPackagePath } from "./file";
+import { __dirname, copyFile, npmPackagePath } from "./file";
 
 console.log(`
 更新版权文件中...

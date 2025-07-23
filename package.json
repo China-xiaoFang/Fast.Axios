@@ -1,6 +1,6 @@
 {
 	"name": "@fast-china/axios",
-	"version": "1.0.18",
+	"version": "1.0.19",
 	"description": "Fast Axios 请求工具库.",
 	"type": "module",
 	"keywords": [
@@ -34,8 +34,8 @@
 		"lint": "pnpm lint:eslint && pnpm lint:prettier"
 	},
 	"dependencies": {
-		"@types/lodash": "latest",
-		"@types/lodash-es": "latest",
+		"@types/lodash": "^4.17",
+		"@types/lodash-es": "^4.17",
 		"local-pkg": "^1",
 		"lodash": "^4.17",
 		"lodash-es": "^4.17",
@@ -43,10 +43,10 @@
 		"unplugin": "^2.3"
 	},
 	"devDependencies": {
-		"@dcloudio/types": "latest",
+		"@dcloudio/types": "^3",
 		"@fast-china/eslint-config": "^1",
 		"@rollup/plugin-terser": "^0.4",
-		"@types/node": "latest",
+		"@types/node": "^24",
 		"@vue/tsconfig": "^0.7",
 		"axios": "^1.9",
 		"eslint": "^9",

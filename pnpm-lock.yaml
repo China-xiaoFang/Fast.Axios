@@ -9,10 +9,10 @@ importers:
   .:
     dependencies:
       '@types/lodash':
-        specifier: latest
+        specifier: ^4.17
         version: 4.17.17
       '@types/lodash-es':
-        specifier: latest
+        specifier: ^4.17
         version: 4.17.12
       local-pkg:
         specifier: ^1
@@ -31,7 +31,7 @@ importers:
         version: 2.3.4
     devDependencies:
       '@dcloudio/types':
-        specifier: latest
+        specifier: ^3
         version: 3.4.15
       '@fast-china/eslint-config':
         specifier: ^1
@@ -40,8 +40,8 @@ importers:
         specifier: ^0.4
         version: 0.4.4(rollup@4.41.1)
       '@types/node':
-        specifier: latest
-        version: 22.15.21
+        specifier: ^24
+        version: 24.1.0
       '@vue/tsconfig':
         specifier: ^0.7
         version: 0.7.0(typescript@5.8.3)
@@ -59,16 +59,16 @@ importers:
         version: 5.39.2
       tsup:
         specifier: ^8
-        version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@22.15.21))(postcss@8.5.3)(typescript@5.8.3)
+        version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.1.0))(postcss@8.5.3)(typescript@5.8.3)
       typescript:
         specifier: ^5
         version: 5.8.3
       vite:
         specifier: ^6
-        version: 6.3.5(@types/node@22.15.21)(terser@5.39.2)
+        version: 6.3.5(@types/node@24.1.0)(terser@5.39.2)
       vite-plugin-dts:
         specifier: ^4
-        version: 4.5.4(@types/node@22.15.21)(rollup@4.41.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.21)(terser@5.39.2))
+        version: 4.5.4(@types/node@24.1.0)(rollup@4.41.1)(typescript@5.8.3)(vite@6.3.5(@types/node@24.1.0)(terser@5.39.2))
       vue-tsc:
         specifier: ^2
         version: 2.2.10(typescript@5.8.3)
@@ -436,56 +436,67 @@ packages:
     resolution: {integrity: sha512-wC53ZNDgt0pqx5xCAgNunkTzFE8GTgdZ9EwYGVcg+jEjJdZGtq9xPjDnFgfFozQI/Xm1mh+D9YlYtl+ueswNEg==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.41.1':
     resolution: {integrity: sha512-jwKCca1gbZkZLhLRtsrka5N8sFAaxrGz/7wRJ8Wwvq3jug7toO21vWlViihG85ei7uJTpzbXZRcORotE+xyrLA==}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.41.1':
     resolution: {integrity: sha512-g0UBcNknsmmNQ8V2d/zD2P7WWfJKU0F1nu0k5pW4rvdb+BIqMm8ToluW/eeRmxCared5dD76lS04uL4UaNgpNA==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.41.1':
     resolution: {integrity: sha512-XZpeGB5TKEZWzIrj7sXr+BEaSgo/ma/kCgrZgL0oo5qdB1JlTzIYQKel/RmhT6vMAvOdM2teYlAaOGJpJ9lahg==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loongarch64-gnu@4.41.1':
     resolution: {integrity: sha512-bkCfDJ4qzWfFRCNt5RVV4DOw6KEgFTUZi2r2RuYhGWC8WhCA8lCAJhDeAmrM/fdiAH54m0mA0Vk2FGRPyzI+tw==}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-powerpc64le-gnu@4.41.1':
     resolution: {integrity: sha512-3mr3Xm+gvMX+/8EKogIZSIEF0WUu0HL9di+YWlJpO8CQBnoLAEL/roTCxuLncEdgcfJcvA4UMOf+2dnjl4Ut1A==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.41.1':
     resolution: {integrity: sha512-3rwCIh6MQ1LGrvKJitQjZFuQnT2wxfU+ivhNBzmxXTXPllewOF7JR1s2vMX/tWtUYFgphygxjqMl76q4aMotGw==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.41.1':
     resolution: {integrity: sha512-LdIUOb3gvfmpkgFZuccNa2uYiqtgZAz3PTzjuM5bH3nvuy9ty6RGc/Q0+HDFrHrizJGVpjnTZ1yS5TNNjFlklw==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.41.1':
     resolution: {integrity: sha512-oIE6M8WC9ma6xYqjvPhzZYk6NbobIURvP/lEbh7FWplcMO6gn7MM2yHKA1eC/GvYwzNKK/1LYgqzdkZ8YFxR8g==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.41.1':
     resolution: {integrity: sha512-cWBOvayNvA+SyeQMp79BHPK8ws6sHSsYnK5zDcsC3Hsxr1dgTABKjMnMslPq1DvZIp6uO7kIWhiGwaTdR4Og9A==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.41.1':
     resolution: {integrity: sha512-y5CbN44M+pUCdGDlZFzGGBSKCA4A/J2ZH4edTYSSxFg7ce1Xt3GtydbVKWLlzL+INfFIZAEg1ZV6hh9+QQf9YQ==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-win32-arm64-msvc@4.41.1':
     resolution: {integrity: sha512-lZkCxIrjlJlMt1dLO/FbpZbzt6J/A8p4DnqzSa4PWqPEUUUnzXLeki/iyPLfV0BmHItlYgHUqJe+3KiyydmiNQ==}
@@ -548,8 +559,8 @@ packages:
   '@types/mdast@3.0.15':
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
 
-  '@types/node@22.15.21':
-    resolution: {integrity: sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ==}
+  '@types/node@24.1.0':
+    resolution: {integrity: sha512-ut5FthK5moxFKH2T1CUOC6ctR67rQRvvHdFLCD2Ql6KXmMuCrjsSsRI9UsLCm9M18BMwClv4pn327UvB7eeO1w==}
 
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
@@ -2079,8 +2090,8 @@ packages:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
     engines: {node: '>= 0.4'}
 
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+  undici-types@7.8.0:
+    resolution: {integrity: sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw==}
 
   unist-util-stringify-position@2.0.3:
     resolution: {integrity: sha512-3faScn5I+hy9VleOq/qNbAd6pAx7iH5jYBMS9I1HgQVijz/4mv5Bvw5iw1sC/90CODiKo81G/ps8AJrISn687g==}
@@ -2438,23 +2449,23 @@ snapshots:
 
   '@jsdevtools/ono@7.1.3': {}
 
-  '@microsoft/api-extractor-model@7.30.6(@types/node@22.15.21)':
+  '@microsoft/api-extractor-model@7.30.6(@types/node@24.1.0)':
     dependencies:
       '@microsoft/tsdoc': 0.15.1
       '@microsoft/tsdoc-config': 0.17.1
-      '@rushstack/node-core-library': 5.13.1(@types/node@22.15.21)
+      '@rushstack/node-core-library': 5.13.1(@types/node@24.1.0)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.52.8(@types/node@22.15.21)':
+  '@microsoft/api-extractor@7.52.8(@types/node@24.1.0)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.30.6(@types/node@22.15.21)
+      '@microsoft/api-extractor-model': 7.30.6(@types/node@24.1.0)
       '@microsoft/tsdoc': 0.15.1
       '@microsoft/tsdoc-config': 0.17.1
-      '@rushstack/node-core-library': 5.13.1(@types/node@22.15.21)
+      '@rushstack/node-core-library': 5.13.1(@types/node@24.1.0)
       '@rushstack/rig-package': 0.5.3
-      '@rushstack/terminal': 0.15.3(@types/node@22.15.21)
-      '@rushstack/ts-command-line': 5.0.1(@types/node@22.15.21)
+      '@rushstack/terminal': 0.15.3(@types/node@24.1.0)
+      '@rushstack/ts-command-line': 5.0.1(@types/node@24.1.0)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.10
@@ -2568,7 +2579,7 @@ snapshots:
 
   '@rtsao/scc@1.1.0': {}
 
-  '@rushstack/node-core-library@5.13.1(@types/node@22.15.21)':
+  '@rushstack/node-core-library@5.13.1(@types/node@24.1.0)':
     dependencies:
       ajv: 8.13.0
       ajv-draft-04: 1.0.0(ajv@8.13.0)
@@ -2579,23 +2590,23 @@ snapshots:
       resolve: 1.22.10
       semver: 7.5.4
     optionalDependencies:
-      '@types/node': 22.15.21
+      '@types/node': 24.1.0
 
   '@rushstack/rig-package@0.5.3':
     dependencies:
       resolve: 1.22.10
       strip-json-comments: 3.1.1
 
-  '@rushstack/terminal@0.15.3(@types/node@22.15.21)':
+  '@rushstack/terminal@0.15.3(@types/node@24.1.0)':
     dependencies:
-      '@rushstack/node-core-library': 5.13.1(@types/node@22.15.21)
+      '@rushstack/node-core-library': 5.13.1(@types/node@24.1.0)
       supports-color: 8.1.1
     optionalDependencies:
-      '@types/node': 22.15.21
+      '@types/node': 24.1.0
 
-  '@rushstack/ts-command-line@5.0.1(@types/node@22.15.21)':
+  '@rushstack/ts-command-line@5.0.1(@types/node@24.1.0)':
     dependencies:
-      '@rushstack/terminal': 0.15.3(@types/node@22.15.21)
+      '@rushstack/terminal': 0.15.3(@types/node@24.1.0)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -2620,9 +2631,9 @@ snapshots:
     dependencies:
       '@types/unist': 2.0.11
 
-  '@types/node@22.15.21':
+  '@types/node@24.1.0':
     dependencies:
-      undici-types: 6.21.0
+      undici-types: 7.8.0
 
   '@types/unist@2.0.11': {}
 
@@ -4294,7 +4305,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsup@8.5.0(@microsoft/api-extractor@7.52.8(@types/node@22.15.21))(postcss@8.5.3)(typescript@5.8.3):
+  tsup@8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.1.0))(postcss@8.5.3)(typescript@5.8.3):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.4)
       cac: 6.7.14
@@ -4314,7 +4325,7 @@ snapshots:
       tinyglobby: 0.2.14
       tree-kill: 1.2.2
     optionalDependencies:
-      '@microsoft/api-extractor': 7.52.8(@types/node@22.15.21)
+      '@microsoft/api-extractor': 7.52.8(@types/node@24.1.0)
       postcss: 8.5.3
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -4383,7 +4394,7 @@ snapshots:
       has-symbols: 1.1.0
       which-boxed-primitive: 1.1.1
 
-  undici-types@6.21.0: {}
+  undici-types@7.8.0: {}
 
   unist-util-stringify-position@2.0.3:
     dependencies:
@@ -4403,9 +4414,9 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite-plugin-dts@4.5.4(@types/node@22.15.21)(rollup@4.41.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.21)(terser@5.39.2)):
+  vite-plugin-dts@4.5.4(@types/node@24.1.0)(rollup@4.41.1)(typescript@5.8.3)(vite@6.3.5(@types/node@24.1.0)(terser@5.39.2)):
     dependencies:
-      '@microsoft/api-extractor': 7.52.8(@types/node@22.15.21)
+      '@microsoft/api-extractor': 7.52.8(@types/node@24.1.0)
       '@rollup/pluginutils': 5.1.4(rollup@4.41.1)
       '@volar/typescript': 2.4.14
       '@vue/language-core': 2.2.0(typescript@5.8.3)
@@ -4416,13 +4427,13 @@ snapshots:
       magic-string: 0.30.17
       typescript: 5.8.3
     optionalDependencies:
-      vite: 6.3.5(@types/node@22.15.21)(terser@5.39.2)
+      vite: 6.3.5(@types/node@24.1.0)(terser@5.39.2)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite@6.3.5(@types/node@22.15.21)(terser@5.39.2):
+  vite@6.3.5(@types/node@24.1.0)(terser@5.39.2):
     dependencies:
       esbuild: 0.25.4
       fdir: 6.4.4(picomatch@4.0.2)
@@ -4431,7 +4442,7 @@ snapshots:
       rollup: 4.41.1
       tinyglobby: 0.2.14
     optionalDependencies:
-      '@types/node': 22.15.21
+      '@types/node': 24.1.0
       fsevents: 2.3.3
       terser: 5.39.2
 

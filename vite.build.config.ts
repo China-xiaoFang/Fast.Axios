@@ -6,23 +6,6 @@ const peerDependencies = {
 };
 
 /**
- * 构建删除包
- */
-const removedDevDependencies = [
-	"@fast-china/eslint-config",
-	"@rollup/plugin-terser",
-	"@vue/tsconfig",
-	"eslint",
-	"prettier",
-	"terser",
-	"tsup",
-	"typescript",
-	"vite",
-	"vite-plugin-dts",
-	"vue-tsc",
-];
-
-/**
  * 构建全局包
  */
 const globalDependenciesMapping = {
@@ -33,4 +16,4 @@ const globalDependenciesMapping = {
 	unplugin: "_",
 };
 
-export { peerDependencies, removedDevDependencies, globalDependenciesMapping };
+export { peerDependencies, globalDependenciesMapping };
