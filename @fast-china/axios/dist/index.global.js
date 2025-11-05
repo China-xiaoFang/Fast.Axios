@@ -1,8 +1,5 @@
-var FastAxios = function(exports, axios2) {
-  "use strict";var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-
+var FastAxios = (function(exports, axios2) {
+  "use strict";
   "use strict";
   function isAbsoluteURL(url) {
     return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
@@ -65,6 +62,16 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     const prototype2 = getPrototypeOf(val);
     return (prototype2 === null || prototype2 === Object.prototype || Object.getPrototypeOf(prototype2) === null) && !(toStringTag in val) && !(iterator in val);
   };
+  const isEmptyObject = (val) => {
+    if (!isObject$1(val) || isBuffer$1(val)) {
+      return false;
+    }
+    try {
+      return Object.keys(val).length === 0 && Object.getPrototypeOf(val) === Object.prototype;
+    } catch (e) {
+      return false;
+    }
+  };
   const isDate$1 = kindOfTest("Date");
   const isFile = kindOfTest("File");
   const isBlob = kindOfTest("Blob");
@@ -92,6 +99,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         fn.call(null, obj[i], i, obj);
       }
     } else {
+      if (isBuffer$1(obj)) {
+        return;
+      }
       const keys2 = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj);
       const len = keys2.length;
       let key;
@@ -102,6 +112,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   function findKey$1(obj, key) {
+    if (isBuffer$1(obj)) {
+      return null;
+    }
     key = key.toLowerCase();
     const keys2 = Object.keys(obj);
     let i = keys2.length;
@@ -120,7 +133,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   })();
   const isContextDefined = (context) => !isUndefined$1(context) && context !== _global;
   function merge$1() {
-    const { caseless } = isContextDefined(this) && this || {};
+    const { caseless, skipUndefined } = isContextDefined(this) && this || {};
     const result2 = {};
     const assignValue2 = (val, key) => {
       const targetKey = caseless && findKey$1(result2, key) || key;
@@ -130,7 +143,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         result2[targetKey] = merge$1({}, val);
       } else if (isArray$1(val)) {
         result2[targetKey] = val.slice();
-      } else {
+      } else if (!skipUndefined || !isUndefined$1(val)) {
         result2[targetKey] = val;
       }
     };
@@ -292,6 +305,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         if (stack.indexOf(source) >= 0) {
           return;
         }
+        if (isBuffer$1(source)) {
+          return source;
+        }
         if (!("toJSON" in source)) {
           stack[i] = source;
           const target = isArray$1(source) ? [] : {};
@@ -341,6 +357,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     isBoolean: isBoolean$1,
     isObject: isObject$1,
     isPlainObject: isPlainObject$1,
+    isEmptyObject,
     isReadableStream,
     isRequest,
     isResponse,
@@ -456,9 +473,13 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }, (prop) => {
       return prop !== "isAxiosError";
     });
-    AxiosError.call(axiosError, error.message, code, config, request2, response);
-    axiosError.cause = error;
-    axiosError.name = error.name;
+    const msg = error && error.message ? error.message : "Error";
+    const errCode = code == null && error ? error.code : code;
+    AxiosError.call(axiosError, msg, errCode, config, request2, response);
+    if (error && axiosError.cause == null) {
+      Object.defineProperty(axiosError, "cause", { value: error, configurable: true });
+    }
+    axiosError.name = error && error.name || "Error";
     customProps && Object.assign(axiosError, customProps);
     return axiosError;
   };
@@ -508,6 +529,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (value === null) return "";
       if (utils.isDate(value)) {
         return value.toISOString();
+      }
+      if (utils.isBoolean(value)) {
+        return value.toString();
       }
       if (!useBlob && utils.isBlob(value)) {
         throw new AxiosError("Blob is not supported. Use a Buffer instead.");
@@ -606,7 +630,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   };
   "use strict";
   function encode(val) {
-    return encodeURIComponent(val).replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+").replace(/%5B/gi, "[").replace(/%5D/gi, "]");
+    return encodeURIComponent(val).replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+");
   }
   function buildURL(url, params, options) {
     if (!params) {
@@ -681,7 +705,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   };
   const resolveUniAppRequestOptions = (config) => {
-    var _a;
     const data = config.data;
     const responseType = config.responseType === "arraybuffer" ? "arraybuffer" : "text";
     const dataType = responseType === "text" ? "json" : void 0;
@@ -693,7 +716,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       requestHeaders.set("Authorization", `Basic ${btoa(`${username}:${password}`)}`);
     }
     const fullPath = buildFullPath(baseURL, config.url);
-    const method2 = ((_a = config == null ? void 0 : config.method) == null ? void 0 : _a.toUpperCase()) ?? "GET";
+    const method2 = config?.method?.toUpperCase() ?? "GET";
     const url = buildURL(fullPath, config.params, config.paramsSerializer);
     const timeout = config.timeout || 6e4;
     let formData = {};
@@ -756,9 +779,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   class OnCanceled {
+    config;
+    onCanceled;
     constructor(config) {
-      __publicField(this, "config");
-      __publicField(this, "onCanceled");
       this.config = config;
     }
     subscribe(task, reject2) {
@@ -810,7 +833,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           if (errMsg) {
             const isTimeoutError = errMsg === "downloadFile:fail timeout";
             if (isTimeoutError) reject2(new axios2.AxiosError(errMsg, axios2.AxiosError.ETIMEDOUT, responseConfig, task));
-            const isNetworkError = errMsg === "downloadFile:fail ";
+            const isNetworkError = errMsg === "downloadFile:fail" || errMsg === "downloadFile:fail ";
             if (isNetworkError) {
               reject2(new axios2.AxiosError(errMsg, axios2.AxiosError.ERR_NETWORK, responseConfig, task));
             }
@@ -856,11 +879,13 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           const { errMsg = "" } = error ?? {};
           if (errMsg) {
             const isTimeoutError = errMsg === "request:fail timeout";
-            const isNetworkError = errMsg === "request:fail ";
+            const isEconnabortedError = errMsg === "request:fail abort";
+            const isSslError = errMsg === "request:fail ssl";
+            const isNetworkError = errMsg === "request:fail" || errMsg === "request:fail ";
             if (isTimeoutError) reject2(new axios2.AxiosError(errMsg, axios2.AxiosError.ETIMEDOUT, responseConfig, task));
-            if (isNetworkError) {
-              reject2(new axios2.AxiosError(errMsg, axios2.AxiosError.ERR_NETWORK, responseConfig, task));
-            }
+            if (isEconnabortedError) reject2(new axios2.AxiosError(errMsg, axios2.AxiosError.ECONNABORTED, responseConfig, task));
+            if (isSslError) reject2(new axios2.AxiosError(errMsg, axios2.AxiosError.ERR_NETWORK, responseConfig, task));
+            if (isNetworkError) reject2(new axios2.AxiosError(errMsg, axios2.AxiosError.ERR_NETWORK, responseConfig, task));
           }
           reject2(new axios2.AxiosError(error.errMsg, void 0, responseConfig, task));
           task = null;
@@ -1132,10 +1157,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return tag == funcTag$2 || tag == genTag$1 || tag == asyncTag || tag == proxyTag;
   }
   var coreJsData = root["__core-js_shared__"];
-  var maskSrcKey = function() {
+  var maskSrcKey = (function() {
     var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || "");
     return uid ? "Symbol(src)_1." + uid : "";
-  }();
+  })();
   function isMasked(func2) {
     return !!maskSrcKey && maskSrcKey in func2;
   }
@@ -1183,7 +1208,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return func2;
   };
   var objectCreate = Object.create;
-  var baseCreate = /* @__PURE__ */ function() {
+  var baseCreate = /* @__PURE__ */ (function() {
     function object2() {
     }
     return function(proto) {
@@ -1198,7 +1223,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       object2.prototype = void 0;
       return result2;
     };
-  }();
+  })();
   function createCtor(Ctor) {
     return function() {
       var args = arguments;
@@ -1412,14 +1437,14 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       return value;
     };
   }
-  var defineProperty = function() {
+  var defineProperty = (function() {
     try {
       var func2 = getNative(Object, "defineProperty");
       func2({}, "", {});
       return func2;
     } catch (e) {
     }
-  }();
+  })();
   var baseSetToString = !defineProperty ? identity : function(func2, string2) {
     return defineProperty(func2, "toString", {
       "configurable": true,
@@ -1860,9 +1885,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   var objectProto$l = Object.prototype;
   var hasOwnProperty$j = objectProto$l.hasOwnProperty;
   var propertyIsEnumerable$1 = objectProto$l.propertyIsEnumerable;
-  var isArguments = baseIsArguments(/* @__PURE__ */ function() {
+  var isArguments = baseIsArguments(/* @__PURE__ */ (function() {
     return arguments;
-  }()) ? baseIsArguments : function(value) {
+  })()) ? baseIsArguments : function(value) {
     return isObjectLike(value) && hasOwnProperty$j.call(value, "callee") && !propertyIsEnumerable$1.call(value, "callee");
   };
   function stubFalse() {
@@ -1891,7 +1916,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   var freeModule$1 = freeExports$1 && typeof module == "object" && module && !module.nodeType && module;
   var moduleExports$1 = freeModule$1 && freeModule$1.exports === freeExports$1;
   var freeProcess = moduleExports$1 && freeGlobal.process;
-  var nodeUtil = function() {
+  var nodeUtil = (function() {
     try {
       var types = freeModule$1 && freeModule$1.require && freeModule$1.require("util").types;
       if (types) {
@@ -1900,7 +1925,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       return freeProcess && freeProcess.binding && freeProcess.binding("util");
     } catch (e) {
     }
-  }();
+  })();
   var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
   var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
   var objectProto$k = Object.prototype;
@@ -6462,15 +6487,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       }
     return result2;
   }
-  /**
-   * @license
-   * Lodash (Custom Build) <https://lodash.com/>
-   * Build: `lodash modularize exports="es" -o ./`
-   * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
-   * Released under MIT license <https://lodash.com/license>
-   * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-   * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-   */
   var VERSION = "4.17.21";
   var WRAP_BIND_KEY_FLAG = 2;
   var LAZY_FILTER_FLAG = 1, LAZY_WHILE_FLAG = 3;
@@ -6479,7 +6495,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   var hasOwnProperty = objectProto.hasOwnProperty;
   var symIterator = Symbol$1 ? Symbol$1.iterator : void 0;
   var nativeMax = Math.max, nativeMin = Math.min;
-  var mixin = /* @__PURE__ */ function(func2) {
+  var mixin = /* @__PURE__ */ (function(func2) {
     return function(object2, source, options) {
       if (options == null) {
         var isObj = isObject(source), props = isObj && keys(source), methodNames = props && props.length && baseFunctions(source, props);
@@ -6491,7 +6507,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       }
       return func2(object2, source, options);
     };
-  }(mixin$1);
+  })(mixin$1);
   lodash.after = func.after;
   lodash.ary = func.ary;
   lodash.assign = object.assign;
@@ -6796,7 +6812,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   lodash.each = collection.forEach;
   lodash.eachRight = collection.forEachRight;
   lodash.first = array.head;
-  mixin(lodash, function() {
+  mixin(lodash, (function() {
     var source = {};
     baseForOwn(lodash, function(func2, methodName) {
       if (!hasOwnProperty.call(lodash.prototype, methodName)) {
@@ -6804,7 +6820,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       }
     });
     return source;
-  }(), { "chain": false });
+  })(), { "chain": false });
   lodash.VERSION = VERSION;
   (lodash.templateSettings = string.templateSettings).imports._ = lodash;
   arrayEach(["bind", "bindKey", "curry", "curryRight", "partial", "partialRight"], function(methodName) {
@@ -6964,23 +6980,14 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   if (symIterator) {
     lodash.prototype[symIterator] = seq.toIterator;
   }
-  /**
-   * @license
-   * Lodash (Custom Build) <https://lodash.com/>
-   * Build: `lodash modularize exports="es" -o ./`
-   * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
-   * Released under MIT license <https://lodash.com/license>
-   * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-   * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-   */
   class CacheManage {
+    _handle;
+    /** 获取 */
+    get;
+    /** 设置 */
+    set;
+    _cacheRecord = /* @__PURE__ */ new Map();
     constructor() {
-      __publicField(this, "_handle");
-      /** 获取 */
-      __publicField(this, "get");
-      /** 设置 */
-      __publicField(this, "set");
-      __publicField(this, "_cacheRecord", /* @__PURE__ */ new Map());
       this._handle = {
         get: (key) => {
           if (!this._cacheRecord.has(key)) {
@@ -7009,12 +7016,12 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   class CryptoManage {
+    _handle;
+    /** 加密 */
+    encrypt;
+    /** 解密 */
+    decrypt;
     constructor() {
-      __publicField(this, "_handle");
-      /** 加密 */
-      __publicField(this, "encrypt");
-      /** 解密 */
-      __publicField(this, "decrypt");
       this._handle = {
         encrypt: (config, timestamp) => {
           return;
@@ -7040,14 +7047,14 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   class InterceptorsManage {
+    _handle;
+    /** 请求拦截器 */
+    request;
+    /** 响应拦截器 */
+    response;
+    /** 响应错误处理 */
+    responseError;
     constructor() {
-      __publicField(this, "_handle");
-      /** 请求拦截器 */
-      __publicField(this, "request");
-      /** 响应拦截器 */
-      __publicField(this, "response");
-      /** 响应错误处理 */
-      __publicField(this, "responseError");
       this._handle = {
         request: (config) => {
           return;
@@ -7083,12 +7090,12 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   class LoadingManage {
+    _handle;
+    /** 显示 */
+    show;
+    /** 关闭 */
+    close;
     constructor() {
-      __publicField(this, "_handle");
-      /** 显示 */
-      __publicField(this, "show");
-      /** 关闭 */
-      __publicField(this, "close");
       this._handle = {
         show: (text) => {
           return;
@@ -7114,16 +7121,16 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   class MessageManage {
+    _handle;
+    /** 成功 */
+    success;
+    /** 警告 */
+    warning;
+    /** 信息 */
+    info;
+    /** 错误 */
+    error;
     constructor() {
-      __publicField(this, "_handle");
-      /** 成功 */
-      __publicField(this, "success");
-      /** 警告 */
-      __publicField(this, "warning");
-      /** 信息 */
-      __publicField(this, "info");
-      /** 错误 */
-      __publicField(this, "error");
       this._handle = {
         success: (message) => {
           console.log(`[Fast.Axios] ${message}`);
@@ -7169,10 +7176,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   class MessageBoxManage {
+    _handle;
+    /** 确认弹窗 */
+    confirm;
     constructor() {
-      __publicField(this, "_handle");
-      /** 确认弹窗 */
-      __publicField(this, "confirm");
       this._handle = {
         confirm: (options) => {
           if (typeof uni !== "undefined") {
@@ -7219,27 +7226,12 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   class FastAxios2 {
+    // eslint-disable-next-line no-use-before-define
+    static instance;
     constructor(options) {
-      __publicField(this, "_baseUrl");
-      __publicField(this, "_timeout");
-      __publicField(this, "_headers");
-      __publicField(this, "_requestCipher");
-      /** 错误Code */
-      __publicField(this, "errorCode");
-      /** 加载 @description 需要自行处理多次调用的问题 */
-      __publicField(this, "loading");
-      /** 消息提示 */
-      __publicField(this, "message");
-      /** 消息提示框 */
-      __publicField(this, "messageBox");
-      /** 缓存 */
-      __publicField(this, "cache");
-      /** 加密解密 */
-      __publicField(this, "crypto");
-      /** 拦截器 */
-      __publicField(this, "interceptors");
       this.setOptions(options);
       this.errorCode = {
+        default: "请求失败，请稍后再试！",
         cancelDuplicate: "重复请求，自动取消！",
         offLine: "您断网了！",
         fileDownloadError: "文件下载失败或此文件不存在！",
@@ -7261,8 +7253,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         504: "服务暂时无法访问，请稍后再试！",
         505: "HTTP版本不受支持！",
         [axios2.AxiosError.ETIMEDOUT]: "请求超时！",
+        [axios2.AxiosError.ERR_CANCELED]: "连接已被取消！",
         [axios2.AxiosError.ECONNABORTED]: "连接中断，服务器暂时过载或维护！",
-        [axios2.AxiosError.ERR_NETWORK]: "网关错误，服务不可用，服务器暂时过载或维护！"
+        [axios2.AxiosError.ERR_NETWORK]: "网关错误，服务不可用，服务器暂时过载或维护！",
+        // UniApp
+        "request:fail": "网关错误，服务不可用，服务器暂时过载或维护！"
       };
       this.loading = new LoadingManage();
       this.message = new MessageManage();
@@ -7276,28 +7271,30 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
      * @param options 初始化选项
      */
     setOptions(options) {
-      if (options == null ? void 0 : options.baseUrl) {
+      if (options?.baseUrl) {
         this._baseUrl = options.baseUrl;
       }
-      if (options == null ? void 0 : options.timeout) {
+      if (options?.timeout) {
         this._timeout = options.timeout;
       } else {
         this._timeout = this._timeout ?? 6e4;
       }
-      if (options == null ? void 0 : options.headers) {
+      if (options?.headers) {
         this._headers = { ...this._headers ?? {}, ...options.headers };
       }
-      if (!isNil(options == null ? void 0 : options.requestCipher)) {
+      if (!isNil(options?.requestCipher)) {
         this._requestCipher = options.requestCipher;
       } else {
         this._requestCipher = isNil(this._requestCipher) ? true : this._requestCipher;
       }
       return this;
     }
+    _baseUrl;
     /** 请求域名或者Base路径 */
     get baseUrl() {
       return this._baseUrl;
     }
+    _timeout;
     /**
      * 超时时间，单位毫秒
      * @default 60000
@@ -7305,10 +7302,12 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     get timeout() {
       return this._timeout;
     }
+    _headers;
     /** 默认头部 */
     get headers() {
       return this._headers;
     }
+    _requestCipher;
     /**
      * 请求加密解密
      * @default true
@@ -7316,6 +7315,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     get requestCipher() {
       return this._requestCipher;
     }
+    /** 错误Code */
+    errorCode;
+    /** 加载 @description 需要自行处理多次调用的问题 */
+    loading;
+    /** 消息提示 */
+    message;
+    /** 消息提示框 */
+    messageBox;
+    /** 缓存 */
+    cache;
+    /** 加密解密 */
+    crypto;
+    /** 拦截器 */
+    interceptors;
     addErrorCode(arg, message) {
       if (typeof arg === "string" || typeof arg === "number") {
         this.errorCode[arg] = message;
@@ -7327,8 +7340,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       return this;
     }
   }
-  // eslint-disable-next-line no-use-before-define
-  __publicField(FastAxios2, "instance");
   const createFastAxios = (options, newInstance = false) => {
     if (newInstance) {
       return new FastAxios2(options);
@@ -7380,17 +7391,16 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   };
   const httpErrorStatusHandle = async (error) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
     let message = "";
-    const code = ((_b = (_a = error == null ? void 0 : error.response) == null ? void 0 : _a.data) == null ? void 0 : _b.code) || ((_c = error == null ? void 0 : error.response) == null ? void 0 : _c.status) || (error == null ? void 0 : error.code) || "default";
-    if (((_d = error == null ? void 0 : error.request) == null ? void 0 : _d.responseType) === "blob") {
+    const code = error?.response?.data?.code || error?.response?.status || error?.code || error?.message || "default";
+    if (error?.request?.responseType === "blob") {
       try {
-        message = (_g = JSON.parse(await ((_f = (_e = error == null ? void 0 : error.response) == null ? void 0 : _e.data) == null ? void 0 : _f.text()))) == null ? void 0 : _g.message;
+        message = JSON.parse(await error?.response?.data?.text())?.message;
       } catch {
-        message = ((_i = (_h = error == null ? void 0 : error.response) == null ? void 0 : _h.data) == null ? void 0 : _i.message) || useFastAxios().errorCode[code];
+        message = error?.response?.data?.message || useFastAxios().errorCode[code];
       }
     } else {
-      message = ((_k = (_j = error == null ? void 0 : error.response) == null ? void 0 : _j.data) == null ? void 0 : _k.message) || useFastAxios().errorCode[code];
+      message = error?.response?.data?.message || useFastAxios().errorCode[code];
     }
     return message;
   };
@@ -7414,7 +7424,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   };
   const createAxios = (axiosConfig) => {
-    var _a;
     const fastAxios = useFastAxios();
     const options = { ...axiosOptions, ...axiosConfig };
     if (isNil(options.requestCipher)) {
@@ -7424,7 +7433,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (options.params) {
         console.warn("[Fast.Axios] 如果使用 Http Cache，则不能存在任何 'params' 参数");
       }
-      if ((_a = fastAxios.cache) == null ? void 0 : _a.get) {
+      if (fastAxios.cache?.get) {
         const cacheRes = fastAxios.cache.get(options.url);
         if (cacheRes) {
           return Promise.resolve(cacheRes);
@@ -7445,14 +7454,13 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     });
     Axios.interceptors.request.use(
       (config) => {
-        var _a2, _b, _c;
         removePending(pendingKey);
         options.cancelDuplicateRequest && addPending(pendingKey, config);
-        (_a2 = fastAxios.interceptors) == null ? void 0 : _a2.request(config);
-        options.loading && ((_b = fastAxios.loading) == null ? void 0 : _b.show(options.loadingText));
+        fastAxios.interceptors?.request(config);
+        options.loading && fastAxios.loading?.show(options.loadingText);
         if (config.responseType === "json") {
           if (options.requestCipher) {
-            (_c = fastAxios.crypto) == null ? void 0 : _c.encrypt(config, timestamp);
+            fastAxios.crypto?.encrypt(config, timestamp);
           } else {
             if (options.getMethodCacheHandle && config.method.toUpperCase() === "GET") {
               config.params = config.params || {};
@@ -7469,10 +7477,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     );
     Axios.interceptors.response.use(
       (response) => {
-        var _a2, _b, _c, _d, _e, _f, _g;
         removePending(pendingKey);
-        options.loading && ((_a2 = fastAxios.loading) == null ? void 0 : _a2.close(options));
-        if ((_b = fastAxios.interceptors) == null ? void 0 : _b.response) {
+        options.loading && fastAxios.loading?.close(options);
+        if (fastAxios.interceptors?.response) {
           try {
             const result2 = fastAxios.interceptors.response(response, options);
             if (!isNil(result2)) {
@@ -7490,36 +7497,36 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
             }
             return Promise.resolve(response);
           } else {
-            (_c = fastAxios.message) == null ? void 0 : _c.error(fastAxios.errorCode["fileDownloadError"]);
+            fastAxios.message?.error(fastAxios.errorCode["fileDownloadError"]);
             return Promise.reject(response);
           }
         } else if (response.config.responseType === "json") {
           let responseData = response.data;
           if (options.restfulResult) {
             const restfulData = responseData;
-            const code = (restfulData == null ? void 0 : restfulData.code) ?? response.status;
-            if (code < 200 || code > 299 || (restfulData == null ? void 0 : restfulData.success) === false) {
+            const code = restfulData?.code ?? response.status;
+            if (code < 200 || code > 299 || restfulData?.success === false) {
               if (options.showCodeMessage) {
-                if (restfulData == null ? void 0 : restfulData.message) {
-                  if (isObject(restfulData == null ? void 0 : restfulData.message)) {
-                    (_d = fastAxios.message) == null ? void 0 : _d.error(JSON.stringify(restfulData == null ? void 0 : restfulData.message));
+                if (restfulData?.message) {
+                  if (isObject(restfulData?.message)) {
+                    fastAxios.message?.error(JSON.stringify(restfulData?.message));
                   } else {
-                    (_e = fastAxios.message) == null ? void 0 : _e.error(restfulData == null ? void 0 : restfulData.message);
+                    fastAxios.message?.error(restfulData?.message);
                   }
                 }
               }
-              console.error("[Fast.Axios]", new axios2.AxiosError((restfulData == null ? void 0 : restfulData.message) ?? "服务器内部错误！"));
-              return Promise.reject(new axios2.AxiosError((restfulData == null ? void 0 : restfulData.message) ?? "服务器内部错误！"));
+              console.error("[Fast.Axios]", new axios2.AxiosError(restfulData?.message ?? "服务器内部错误！"));
+              return Promise.reject(new axios2.AxiosError(restfulData?.message ?? "服务器内部错误！"));
             }
           }
           if (options.requestCipher) {
-            responseData = (_f = fastAxios.crypto) == null ? void 0 : _f.decrypt(response, options);
+            responseData = fastAxios.crypto?.decrypt(response, options);
           }
           if (options.cache && options.restfulResult && options.simpleDataFormat) {
-            (_g = fastAxios.cache) == null ? void 0 : _g.set(options.url, responseData == null ? void 0 : responseData.data);
+            fastAxios.cache?.set(options.url, responseData?.data);
           }
           if (options.simpleDataFormat) {
-            return Promise.resolve(responseData == null ? void 0 : responseData.data);
+            return Promise.resolve(responseData?.data);
           } else {
             return Promise.resolve(responseData);
           }
@@ -7532,18 +7539,17 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         }
       },
       async (error) => {
-        var _a2, _b, _c, _d;
         removePending(pendingKey);
-        options.loading && ((_a2 = fastAxios.loading) == null ? void 0 : _a2.close(options));
+        options.loading && fastAxios.loading?.close(options);
         if (axios2.isCancel(error)) {
           console.warn(`[Fast.Axios] ${fastAxios.errorCode["cancelDuplicate"]}`);
           return Promise.reject();
         }
         if (!globalThis.navigator.onLine) {
-          (_b = fastAxios.message) == null ? void 0 : _b.error(fastAxios.errorCode["offLine"]);
+          fastAxios.message?.error(fastAxios.errorCode["offLine"]);
           return Promise.reject();
         }
-        if ((_c = fastAxios.interceptors) == null ? void 0 : _c.responseError) {
+        if (fastAxios.interceptors?.responseError) {
           try {
             const result2 = fastAxios.interceptors.responseError(error, options);
             if (!isNil(result2)) {
@@ -7556,7 +7562,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         }
         if (options.showErrorMessage) {
           const message = await httpErrorStatusHandle(error);
-          (_d = fastAxios.message) == null ? void 0 : _d.error(message);
+          fastAxios.message?.error(message);
         }
         console.error("[Fast.Axios]", error);
         return Promise.reject(error);
@@ -7582,5 +7588,5 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
   exports.useFastAxios = useFastAxios;
   Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
   return exports;
-}({}, axios);
+})({}, axios);
 //# sourceMappingURL=index.global.js.map

@@ -35,12 +35,14 @@ const request: Method = (config) => {
 				const { errMsg = "" } = error ?? {};
 				if (errMsg) {
 					const isTimeoutError = errMsg === "request:fail timeout";
-					const isNetworkError = errMsg === "request:fail ";
-					if (isTimeoutError) reject(new AxiosError(errMsg, AxiosError.ETIMEDOUT, responseConfig, task));
+					const isEconnabortedError = errMsg === "request:fail abort";
+					const isSslError = errMsg === "request:fail ssl";
+					const isNetworkError = errMsg === "request:fail" || errMsg === "request:fail ";
 
-					if (isNetworkError) {
-						reject(new AxiosError(errMsg, AxiosError.ERR_NETWORK, responseConfig, task));
-					}
+					if (isTimeoutError) reject(new AxiosError(errMsg, AxiosError.ETIMEDOUT, responseConfig, task));
+					if (isEconnabortedError) reject(new AxiosError(errMsg, AxiosError.ECONNABORTED, responseConfig, task));
+					if (isSslError) reject(new AxiosError(errMsg, AxiosError.ERR_NETWORK, responseConfig, task));
+					if (isNetworkError) reject(new AxiosError(errMsg, AxiosError.ERR_NETWORK, responseConfig, task));
 				}
 				reject(new AxiosError(error.errMsg, undefined, responseConfig, task));
 				task = null;

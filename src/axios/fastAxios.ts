@@ -16,6 +16,7 @@ class FastAxios {
 		this.setOptions(options);
 
 		this.errorCode = {
+			default: "请求失败，请稍后再试！",
 			cancelDuplicate: "重复请求，自动取消！",
 			offLine: "您断网了！",
 			fileDownloadError: "文件下载失败或此文件不存在！",
@@ -37,8 +38,11 @@ class FastAxios {
 			504: "服务暂时无法访问，请稍后再试！",
 			505: "HTTP版本不受支持！",
 			[AxiosError.ETIMEDOUT]: "请求超时！",
+			[AxiosError.ERR_CANCELED]: "连接已被取消！",
 			[AxiosError.ECONNABORTED]: "连接中断，服务器暂时过载或维护！",
 			[AxiosError.ERR_NETWORK]: "网关错误，服务不可用，服务器暂时过载或维护！",
+			// UniApp
+			"request:fail": "网关错误，服务不可用，服务器暂时过载或维护！",
 		};
 
 		this.loading = new LoadingManage();

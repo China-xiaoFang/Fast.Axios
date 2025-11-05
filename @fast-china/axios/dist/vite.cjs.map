@@ -1,1 +1,1 @@
-{"version":3,"sources":["../../../src/vite.ts"],"names":["unplugin"],"mappings":";;;;;AAEA,IAAO,eAAQA,0BAAS,CAAA","file":"vite.cjs","sourcesContent":["import { unplugin } from \"./unplugin\";\n\nexport default unplugin.vite;\n"]}
+{"version":3,"sources":["../../../src/vite.ts"],"names":["unplugin"],"mappings":";;;;;AAEA,IAAO,eAAQA,0BAAA,CAAS","file":"vite.cjs","sourcesContent":["import { unplugin } from \"./unplugin\";\n\nexport default unplugin.vite;\n"]}

@@ -33,7 +33,7 @@ export type ApiResponse<Output = any, Input = any> = {
 /**
  * 请求类型
  */
-export type RequestType = "auth" | "query" | "add" | "edit" | "delete" | "import" | "export" | "download" | "upload" | "other";
+export type RequestType = "auth" | "query" | "add" | "edit" | "delete" | "submit" | "upload"| "preview" | "download" | "import" | "export" | "callback" | "other";
 
 /**
  * Axios 选项

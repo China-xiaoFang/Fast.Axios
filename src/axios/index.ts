@@ -62,7 +62,7 @@ const httpErrorStatusHandle = async (error: AxiosError | any): Promise<string> =
 	let message = "";
 	// 其他错误码处理
 	// 尝试获取 Restful 风格返回Code，或者获取响应状态码
-	const code = error?.response?.data?.code || error?.response?.status || error?.code || "default";
+	const code = error?.response?.data?.code || error?.response?.status || error?.code || error?.message || "default";
 	// 400业务异常
 	// 500服务器内部错误，可能返回错误信息
 	// 判断响应类型是否为blob
