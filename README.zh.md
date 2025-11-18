@@ -1,4 +1,4 @@
-**中** | [En](https://github.com/China-xiaoFang/fast.axios)
+**中** | [En](https://github.com/China-xiaoFang/Fast.Axios)
 
 <h1 align="center">Fast.Axios</h1>
 
@@ -10,7 +10,7 @@
   <a href="https://www.npmjs.com/package/@fast-china/axios">
     <img src="https://img.shields.io/npm/v/@fast-china/axios?color=orange&label=" alt="version" />
   </a>
-  <a href="https://gitee.com/China-xiaoFang/fast.axios/blob/master/LICENSE">
+  <a href="https://gitee.com/FastDotnet/Fast.Axios/blob/master/LICENSE">
     <img src="https://img.shields.io/npm/l/@fast-china/axios" alt="license" />
   </a>
 </p>
@@ -92,11 +92,11 @@ uFastAxios.message.error.use((message) => ElMessage.error(message));
 
 ## 更新日志
 
-更新日志 [点击查看](https://gitee.com/China-xiaoFang/fast.axios/commits/master)
+更新日志 [点击查看](https://gitee.com/FastDotnet/Fast.Axios/commits/master)
 
 ## 协议
 
-[Fast.Axios](https://gitee.com/China-xiaoFang/fast.axios) 遵循 [Apache-2.0](https://gitee.com/China-xiaoFang/fast.axios/blob/master/LICENSE) 开源协议，欢迎大家提交 `PR` 或 `Issue`。
+[Fast.Axios](https://gitee.com/FastDotnet/Fast.Axios) 遵循 [Apache-2.0](https://gitee.com/FastDotnet/Fast.Axios/blob/master/LICENSE) 开源协议，欢迎大家提交 `PR` 或 `Issue`。
 
 ```
 Apache开源许可证

@@ -1,4 +1,4 @@
-[中](https://gitee.com/China-xiaoFang/fast.axios) | **En**
+[中](https://gitee.com/FastDotnet/Fast.Axios) | **En**
 
 <h1 align="center">Fast.Axios</h1>
 
@@ -10,7 +10,7 @@
   <a href="https://www.npmjs.com/package/@fast-china/axios">
     <img src="https://img.shields.io/npm/v/@fast-china/axios?color=orange&label=" alt="version" />
   </a>
-  <a href="https://gitee.com/China-xiaoFang/fast.axios/blob/master/LICENSE">
+  <a href="https://gitee.com/FastDotnet/Fast.Axios/blob/master/LICENSE">
     <img src="https://img.shields.io/npm/l/@fast-china/axios" alt="license" />
   </a>
 </p>
@@ -92,11 +92,11 @@ uFastAxios.message.error.use((message) => ElMessage.error(message));
 
 ## Update log
 
-Update log [Click to view](https://gitee.com/China-xiaoFang/fast.axios/commits/master)
+Update log [Click to view](https://gitee.com/FastDotnet/Fast.Axios/commits/master)
 
 ## Protocol
 
-[Fast.Axios](https://gitee.com/China-xiaoFang/fast.axios) complies with the [Apache-2.0](https://gitee.com/China-xiaoFang/fast.axios/blob/master/LICENSE) open source agreement. Welcome to submit `PR` or `Issue`.
+[Fast.Axios](https://gitee.com/FastDotnet/Fast.Axios) complies with the [Apache-2.0](https://gitee.com/FastDotnet/Fast.Axios/blob/master/LICENSE) open source agreement. Welcome to submit `PR` or `Issue`.
 
 ```
 Apache Open Source License

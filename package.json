@@ -1,6 +1,6 @@
 {
 	"name": "@fast-china/axios",
-	"version": "1.0.20",
+	"version": "1.0.21",
 	"description": "Fast Axios 请求工具库.",
 	"type": "module",
 	"keywords": [
@@ -14,11 +14,11 @@
 	"license": "Apache-2.0",
 	"homepage": "https://fastdotnet.com",
 	"bugs": {
-		"url": "https://gitee.com/China-xiaoFang/fast.axios/issues"
+		"url": "https://gitee.com/FastDotnet/Fast.Axios/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://gitee.com/China-xiaoFang/fast.axios"
+		"url": "https://gitee.com/FastDotnet/Fast.Axios"
 	},
 	"author": "小方",
 	"publishConfig": {
