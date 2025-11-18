@@ -16,8 +16,6 @@
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"moduleDetection": "force",
-		/** 非相对模块导入的路径映射配置，根据 baseUrl 配置进行路径计算 */
-		"paths": {},
 		"resolveJsonModule": true,
 		"types": ["node", "@dcloudio/types"],
 		"allowImportingTsExtensions": true,
