@@ -7545,7 +7545,7 @@ var FastAxios = (function(exports, axios2) {
           console.warn(`[Fast.Axios] ${fastAxios.errorCode["cancelDuplicate"]}`);
           return Promise.reject();
         }
-        if (!globalThis.navigator.onLine) {
+        if (globalThis?.navigator?.onLine === false) {
           fastAxios.message?.error(fastAxios.errorCode["offLine"]);
           return Promise.reject();
         }

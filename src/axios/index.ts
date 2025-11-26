@@ -284,7 +284,7 @@ const createAxios = <Output = any, Input = any>(axiosConfig: FastAxiosRequestCon
 			}
 
 			// 判断是否断网
-			if (!globalThis.navigator.onLine) {
+			if (globalThis?.navigator?.onLine === false) {
 				fastAxios.message?.error(fastAxios.errorCode["offLine"]);
 				return Promise.reject();
 			}
