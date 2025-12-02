@@ -19,10 +19,11 @@ const upload: Method = (config) => {
 			success(result) {
 				if (!task) return;
 
+				const headers = new AxiosHeaders(result.header);
 				const response: AxiosResponse = {
 					config: responseConfig,
 					data: result.data,
-					headers: {},
+					headers,
 					status: result.statusCode,
 					statusText: result.errMsg ?? "OK",
 					request: task,

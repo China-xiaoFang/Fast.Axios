@@ -908,10 +908,11 @@ var FastAxios = (function(exports, axios2) {
         ...requestOptions,
         success(result2) {
           if (!task) return;
+          const headers = new axios2.AxiosHeaders(result2.header);
           const response = {
             config: responseConfig,
             data: result2.data,
-            headers: {},
+            headers,
             status: result2.statusCode,
             statusText: result2.errMsg ?? "OK",
             request: task
