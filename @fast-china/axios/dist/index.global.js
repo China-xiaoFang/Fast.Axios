@@ -248,7 +248,7 @@ var FastAxios = (function(exports, axios2) {
       }
     );
   };
-  const hasOwnProperty$p = (({ hasOwnProperty: hasOwnProperty2 }) => (obj, prop) => hasOwnProperty2.call(obj, prop))(Object.prototype);
+  const hasOwnProperty$q = (({ hasOwnProperty: hasOwnProperty2 }) => (obj, prop) => hasOwnProperty2.call(obj, prop))(Object.prototype);
   const isRegExp$1 = kindOfTest("RegExp");
   const reduceDescriptors = (obj, reducer) => {
     const descriptors2 = Object.getOwnPropertyDescriptors(obj);
@@ -386,8 +386,8 @@ var FastAxios = (function(exports, axios2) {
     forEachEntry,
     matchAll,
     isHTMLForm,
-    hasOwnProperty: hasOwnProperty$p,
-    hasOwnProp: hasOwnProperty$p,
+    hasOwnProperty: hasOwnProperty$q,
+    hasOwnProp: hasOwnProperty$q,
     // an alias to avoid ESLint no-prototype-builtins detection
     reduceDescriptors,
     freezeMethods,
@@ -862,6 +862,11 @@ var FastAxios = (function(exports, axios2) {
         ...requestOptions,
         success(result2) {
           if (!task) return;
+          if (Array.isArray(result2.header)) {
+            const dingHeader = {};
+            result2.header.forEach((h) => Object.assign(dingHeader, h));
+            result2.header = dingHeader;
+          }
           const headers = new axios2.AxiosHeaders(result2.header);
           const response = {
             config: responseConfig,
@@ -978,12 +983,12 @@ var FastAxios = (function(exports, axios2) {
   var freeSelf = typeof self == "object" && self && self.Object === Object && self;
   var root = freeGlobal || freeSelf || Function("return this")();
   var Symbol$1 = root.Symbol;
-  var objectProto$s = Object.prototype;
-  var hasOwnProperty$o = objectProto$s.hasOwnProperty;
-  var nativeObjectToString$3 = objectProto$s.toString;
+  var objectProto$t = Object.prototype;
+  var hasOwnProperty$p = objectProto$t.hasOwnProperty;
+  var nativeObjectToString$3 = objectProto$t.toString;
   var symToStringTag$1 = Symbol$1 ? Symbol$1.toStringTag : void 0;
   function getRawTag(value) {
-    var isOwn = hasOwnProperty$o.call(value, symToStringTag$1), tag = value[symToStringTag$1];
+    var isOwn = hasOwnProperty$p.call(value, symToStringTag$1), tag = value[symToStringTag$1];
     try {
       value[symToStringTag$1] = void 0;
       var unmasked = true;
@@ -999,8 +1004,8 @@ var FastAxios = (function(exports, axios2) {
     }
     return result2;
   }
-  var objectProto$r = Object.prototype;
-  var nativeObjectToString$2 = objectProto$r.toString;
+  var objectProto$s = Object.prototype;
+  var nativeObjectToString$2 = objectProto$s.toString;
   function objectToString(value) {
     return nativeObjectToString$2.call(value);
   }
@@ -1182,11 +1187,11 @@ var FastAxios = (function(exports, axios2) {
   }
   var reRegExpChar$1 = /[\\^$.*+?()[\]{}|]/g;
   var reIsHostCtor = /^\[object .+?Constructor\]$/;
-  var funcProto$1 = Function.prototype, objectProto$q = Object.prototype;
+  var funcProto$1 = Function.prototype, objectProto$r = Object.prototype;
   var funcToString$1 = funcProto$1.toString;
-  var hasOwnProperty$n = objectProto$q.hasOwnProperty;
+  var hasOwnProperty$o = objectProto$r.hasOwnProperty;
   var reIsNative = RegExp(
-    "^" + funcToString$1.call(hasOwnProperty$n).replace(reRegExpChar$1, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
+    "^" + funcToString$1.call(hasOwnProperty$o).replace(reRegExpChar$1, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
   );
   function baseIsNative(value) {
     if (!isObject(value) || isMasked(value)) {
@@ -1334,10 +1339,10 @@ var FastAxios = (function(exports, axios2) {
     return metaMap.get(func2);
   };
   var realNames = {};
-  var objectProto$p = Object.prototype;
-  var hasOwnProperty$m = objectProto$p.hasOwnProperty;
+  var objectProto$q = Object.prototype;
+  var hasOwnProperty$n = objectProto$q.hasOwnProperty;
   function getFuncName(func2) {
-    var result2 = func2.name + "", array2 = realNames[result2], length = hasOwnProperty$m.call(realNames, result2) ? array2.length : 0;
+    var result2 = func2.name + "", array2 = realNames[result2], length = hasOwnProperty$n.call(realNames, result2) ? array2.length : 0;
     while (length--) {
       var data = array2[length], otherFunc = data.func;
       if (otherFunc == null || otherFunc == func2) {
@@ -1373,14 +1378,14 @@ var FastAxios = (function(exports, axios2) {
     result2.__values__ = wrapper.__values__;
     return result2;
   }
-  var objectProto$o = Object.prototype;
-  var hasOwnProperty$l = objectProto$o.hasOwnProperty;
+  var objectProto$p = Object.prototype;
+  var hasOwnProperty$m = objectProto$p.hasOwnProperty;
   function lodash(value) {
     if (isObjectLike(value) && !isArray(value) && !(value instanceof LazyWrapper)) {
       if (value instanceof LodashWrapper) {
         return value;
       }
-      if (hasOwnProperty$l.call(value, "__wrapped__")) {
+      if (hasOwnProperty$m.call(value, "__wrapped__")) {
         return wrapperClone(value);
       }
     }
@@ -1786,11 +1791,11 @@ var FastAxios = (function(exports, axios2) {
   function eq(value, other) {
     return value === other || value !== value && other !== other;
   }
-  var objectProto$n = Object.prototype;
-  var hasOwnProperty$k = objectProto$n.hasOwnProperty;
+  var objectProto$o = Object.prototype;
+  var hasOwnProperty$l = objectProto$o.hasOwnProperty;
   function assignValue(object2, key, value) {
     var objValue = object2[key];
-    if (!(hasOwnProperty$k.call(object2, key) && eq(objValue, value)) || value === void 0 && !(key in object2)) {
+    if (!(hasOwnProperty$l.call(object2, key) && eq(objValue, value)) || value === void 0 && !(key in object2)) {
       baseAssignValue(object2, key, value);
     }
   }
@@ -1867,9 +1872,9 @@ var FastAxios = (function(exports, axios2) {
       return object2;
     });
   }
-  var objectProto$m = Object.prototype;
+  var objectProto$n = Object.prototype;
   function isPrototype(value) {
-    var Ctor = value && value.constructor, proto = typeof Ctor == "function" && Ctor.prototype || objectProto$m;
+    var Ctor = value && value.constructor, proto = typeof Ctor == "function" && Ctor.prototype || objectProto$n;
     return value === proto;
   }
   function baseTimes(n, iteratee2) {
@@ -1883,13 +1888,13 @@ var FastAxios = (function(exports, axios2) {
   function baseIsArguments(value) {
     return isObjectLike(value) && baseGetTag(value) == argsTag$3;
   }
-  var objectProto$l = Object.prototype;
-  var hasOwnProperty$j = objectProto$l.hasOwnProperty;
-  var propertyIsEnumerable$1 = objectProto$l.propertyIsEnumerable;
+  var objectProto$m = Object.prototype;
+  var hasOwnProperty$k = objectProto$m.hasOwnProperty;
+  var propertyIsEnumerable$1 = objectProto$m.propertyIsEnumerable;
   var isArguments = baseIsArguments(/* @__PURE__ */ (function() {
     return arguments;
   })()) ? baseIsArguments : function(value) {
-    return isObjectLike(value) && hasOwnProperty$j.call(value, "callee") && !propertyIsEnumerable$1.call(value, "callee");
+    return isObjectLike(value) && hasOwnProperty$k.call(value, "callee") && !propertyIsEnumerable$1.call(value, "callee");
   };
   function stubFalse() {
     return false;
@@ -1929,12 +1934,12 @@ var FastAxios = (function(exports, axios2) {
   })();
   var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
   var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-  var objectProto$k = Object.prototype;
-  var hasOwnProperty$i = objectProto$k.hasOwnProperty;
+  var objectProto$l = Object.prototype;
+  var hasOwnProperty$j = objectProto$l.hasOwnProperty;
   function arrayLikeKeys(value, inherited) {
     var isArr = isArray(value), isArg = !isArr && isArguments(value), isBuff = !isArr && !isArg && isBuffer(value), isType = !isArr && !isArg && !isBuff && isTypedArray(value), skipIndexes = isArr || isArg || isBuff || isType, result2 = skipIndexes ? baseTimes(value.length, String) : [], length = result2.length;
     for (var key in value) {
-      if ((inherited || hasOwnProperty$i.call(value, key)) && !(skipIndexes && // Safari 9 has enumerable `arguments.length` in strict mode.
+      if ((inherited || hasOwnProperty$j.call(value, key)) && !(skipIndexes && // Safari 9 has enumerable `arguments.length` in strict mode.
       (key == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
       isBuff && (key == "offset" || key == "parent") || // PhantomJS 2 has enumerable non-index properties on typed arrays.
       isType && (key == "buffer" || key == "byteLength" || key == "byteOffset") || // Skip index properties.
@@ -1950,15 +1955,15 @@ var FastAxios = (function(exports, axios2) {
     };
   }
   var nativeKeys = overArg(Object.keys, Object);
-  var objectProto$j = Object.prototype;
-  var hasOwnProperty$h = objectProto$j.hasOwnProperty;
+  var objectProto$k = Object.prototype;
+  var hasOwnProperty$i = objectProto$k.hasOwnProperty;
   function baseKeys(object2) {
     if (!isPrototype(object2)) {
       return nativeKeys(object2);
     }
     var result2 = [];
     for (var key in Object(object2)) {
-      if (hasOwnProperty$h.call(object2, key) && key != "constructor") {
+      if (hasOwnProperty$i.call(object2, key) && key != "constructor") {
         result2.push(key);
       }
     }
@@ -1967,15 +1972,15 @@ var FastAxios = (function(exports, axios2) {
   function keys(object2) {
     return isArrayLike(object2) ? arrayLikeKeys(object2) : baseKeys(object2);
   }
-  var objectProto$i = Object.prototype;
-  var hasOwnProperty$g = objectProto$i.hasOwnProperty;
+  var objectProto$j = Object.prototype;
+  var hasOwnProperty$h = objectProto$j.hasOwnProperty;
   var assign = createAssigner(function(object2, source) {
     if (isPrototype(source) || isArrayLike(source)) {
       copyObject(source, keys(source), object2);
       return;
     }
     for (var key in source) {
-      if (hasOwnProperty$g.call(source, key)) {
+      if (hasOwnProperty$h.call(source, key)) {
         assignValue(object2, key, source[key]);
       }
     }
@@ -1989,15 +1994,15 @@ var FastAxios = (function(exports, axios2) {
     }
     return result2;
   }
-  var objectProto$h = Object.prototype;
-  var hasOwnProperty$f = objectProto$h.hasOwnProperty;
+  var objectProto$i = Object.prototype;
+  var hasOwnProperty$g = objectProto$i.hasOwnProperty;
   function baseKeysIn(object2) {
     if (!isObject(object2)) {
       return nativeKeysIn(object2);
     }
     var isProto = isPrototype(object2), result2 = [];
     for (var key in object2) {
-      if (!(key == "constructor" && (isProto || !hasOwnProperty$f.call(object2, key)))) {
+      if (!(key == "constructor" && (isProto || !hasOwnProperty$g.call(object2, key)))) {
         result2.push(key);
       }
     }
@@ -2037,21 +2042,21 @@ var FastAxios = (function(exports, axios2) {
     return result2;
   }
   var HASH_UNDEFINED$2 = "__lodash_hash_undefined__";
-  var objectProto$g = Object.prototype;
-  var hasOwnProperty$e = objectProto$g.hasOwnProperty;
+  var objectProto$h = Object.prototype;
+  var hasOwnProperty$f = objectProto$h.hasOwnProperty;
   function hashGet(key) {
     var data = this.__data__;
     if (nativeCreate) {
       var result2 = data[key];
       return result2 === HASH_UNDEFINED$2 ? void 0 : result2;
     }
-    return hasOwnProperty$e.call(data, key) ? data[key] : void 0;
+    return hasOwnProperty$f.call(data, key) ? data[key] : void 0;
   }
-  var objectProto$f = Object.prototype;
-  var hasOwnProperty$d = objectProto$f.hasOwnProperty;
+  var objectProto$g = Object.prototype;
+  var hasOwnProperty$e = objectProto$g.hasOwnProperty;
   function hashHas(key) {
     var data = this.__data__;
-    return nativeCreate ? data[key] !== void 0 : hasOwnProperty$d.call(data, key);
+    return nativeCreate ? data[key] !== void 0 : hasOwnProperty$e.call(data, key);
   }
   var HASH_UNDEFINED$1 = "__lodash_hash_undefined__";
   function hashSet(key, value) {
@@ -2295,9 +2300,9 @@ var FastAxios = (function(exports, axios2) {
   var at = flatRest(baseAt);
   var getPrototype = overArg(Object.getPrototypeOf, Object);
   var objectTag$3 = "[object Object]";
-  var funcProto = Function.prototype, objectProto$e = Object.prototype;
+  var funcProto = Function.prototype, objectProto$f = Object.prototype;
   var funcToString = funcProto.toString;
-  var hasOwnProperty$c = objectProto$e.hasOwnProperty;
+  var hasOwnProperty$d = objectProto$f.hasOwnProperty;
   var objectCtorString = funcToString.call(Object);
   function isPlainObject(value) {
     if (!isObjectLike(value) || baseGetTag(value) != objectTag$3) {
@@ -2307,7 +2312,7 @@ var FastAxios = (function(exports, axios2) {
     if (proto === null) {
       return true;
     }
-    var Ctor = hasOwnProperty$c.call(proto, "constructor") && proto.constructor;
+    var Ctor = hasOwnProperty$d.call(proto, "constructor") && proto.constructor;
     return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
   }
   var domExcTag = "[object DOMException]", errorTag$2 = "[object Error]";
@@ -2825,8 +2830,8 @@ var FastAxios = (function(exports, axios2) {
   function stubArray() {
     return [];
   }
-  var objectProto$d = Object.prototype;
-  var propertyIsEnumerable = objectProto$d.propertyIsEnumerable;
+  var objectProto$e = Object.prototype;
+  var propertyIsEnumerable = objectProto$e.propertyIsEnumerable;
   var nativeGetSymbols$1 = Object.getOwnPropertySymbols;
   var getSymbols = !nativeGetSymbols$1 ? stubArray : function(object2) {
     if (object2 == null) {
@@ -2890,11 +2895,11 @@ var FastAxios = (function(exports, axios2) {
     };
   }
   const getTag$1 = getTag;
-  var objectProto$c = Object.prototype;
-  var hasOwnProperty$b = objectProto$c.hasOwnProperty;
+  var objectProto$d = Object.prototype;
+  var hasOwnProperty$c = objectProto$d.hasOwnProperty;
   function initCloneArray(array2) {
     var length = array2.length, result2 = new array2.constructor(length);
-    if (length && typeof array2[0] == "string" && hasOwnProperty$b.call(array2, "index")) {
+    if (length && typeof array2[0] == "string" && hasOwnProperty$c.call(array2, "index")) {
       result2.index = array2.index;
       result2.input = array2.input;
     }
@@ -3220,8 +3225,8 @@ var FastAxios = (function(exports, axios2) {
     return false;
   }
   var COMPARE_PARTIAL_FLAG$3 = 1;
-  var objectProto$b = Object.prototype;
-  var hasOwnProperty$a = objectProto$b.hasOwnProperty;
+  var objectProto$c = Object.prototype;
+  var hasOwnProperty$b = objectProto$c.hasOwnProperty;
   function equalObjects(object2, other, bitmask, customizer, equalFunc, stack) {
     var isPartial = bitmask & COMPARE_PARTIAL_FLAG$3, objProps = getAllKeys(object2), objLength = objProps.length, othProps = getAllKeys(other), othLength = othProps.length;
     if (objLength != othLength && !isPartial) {
@@ -3230,7 +3235,7 @@ var FastAxios = (function(exports, axios2) {
     var index = objLength;
     while (index--) {
       var key = objProps[index];
-      if (!(isPartial ? key in other : hasOwnProperty$a.call(other, key))) {
+      if (!(isPartial ? key in other : hasOwnProperty$b.call(other, key))) {
         return false;
       }
     }
@@ -3267,8 +3272,8 @@ var FastAxios = (function(exports, axios2) {
   }
   var COMPARE_PARTIAL_FLAG$2 = 1;
   var argsTag = "[object Arguments]", arrayTag = "[object Array]", objectTag = "[object Object]";
-  var objectProto$a = Object.prototype;
-  var hasOwnProperty$9 = objectProto$a.hasOwnProperty;
+  var objectProto$b = Object.prototype;
+  var hasOwnProperty$a = objectProto$b.hasOwnProperty;
   function baseIsEqualDeep(object2, other, bitmask, customizer, equalFunc, stack) {
     var objIsArr = isArray(object2), othIsArr = isArray(other), objTag = objIsArr ? arrayTag : getTag$1(object2), othTag = othIsArr ? arrayTag : getTag$1(other);
     objTag = objTag == argsTag ? objectTag : objTag;
@@ -3286,7 +3291,7 @@ var FastAxios = (function(exports, axios2) {
       return objIsArr || isTypedArray(object2) ? equalArrays(object2, other, bitmask, customizer, equalFunc, stack) : equalByTag(object2, other, objTag, bitmask, customizer, equalFunc, stack);
     }
     if (!(bitmask & COMPARE_PARTIAL_FLAG$2)) {
-      var objIsWrapped = objIsObj && hasOwnProperty$9.call(object2, "__wrapped__"), othIsWrapped = othIsObj && hasOwnProperty$9.call(other, "__wrapped__");
+      var objIsWrapped = objIsObj && hasOwnProperty$a.call(object2, "__wrapped__"), othIsWrapped = othIsObj && hasOwnProperty$a.call(other, "__wrapped__");
       if (objIsWrapped || othIsWrapped) {
         var objUnwrapped = objIsWrapped ? object2.value() : object2, othUnwrapped = othIsWrapped ? other.value() : other;
         stack || (stack = new Stack());
@@ -3525,10 +3530,10 @@ var FastAxios = (function(exports, axios2) {
       return func2(collection2, setter, baseIteratee(iteratee2, 2), accumulator);
     };
   }
-  var objectProto$9 = Object.prototype;
-  var hasOwnProperty$8 = objectProto$9.hasOwnProperty;
+  var objectProto$a = Object.prototype;
+  var hasOwnProperty$9 = objectProto$a.hasOwnProperty;
   var countBy = createAggregator(function(result2, value, key) {
-    if (hasOwnProperty$8.call(result2, key)) {
+    if (hasOwnProperty$9.call(result2, key)) {
       ++result2[key];
     } else {
       baseAssignValue(result2, key, 1);
@@ -3643,8 +3648,8 @@ var FastAxios = (function(exports, axios2) {
   function defaultTo(value, defaultValue) {
     return value == null || value !== value ? defaultValue : value;
   }
-  var objectProto$8 = Object.prototype;
-  var hasOwnProperty$7 = objectProto$8.hasOwnProperty;
+  var objectProto$9 = Object.prototype;
+  var hasOwnProperty$8 = objectProto$9.hasOwnProperty;
   var defaults = baseRest(function(object2, sources) {
     object2 = Object(object2);
     var index = -1;
@@ -3661,7 +3666,7 @@ var FastAxios = (function(exports, axios2) {
       while (++propsIndex < propsLength) {
         var key = props[propsIndex];
         var value = object2[key];
-        if (value === void 0 || eq(value, objectProto$8[key]) && !hasOwnProperty$7.call(object2, key)) {
+        if (value === void 0 || eq(value, objectProto$9[key]) && !hasOwnProperty$8.call(object2, key)) {
           object2[key] = source[key];
         }
       }
@@ -4195,10 +4200,10 @@ var FastAxios = (function(exports, axios2) {
   function functionsIn(object2) {
     return object2 == null ? [] : baseFunctions(object2, keysIn(object2));
   }
-  var objectProto$7 = Object.prototype;
-  var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
+  var objectProto$8 = Object.prototype;
+  var hasOwnProperty$7 = objectProto$8.hasOwnProperty;
   var groupBy = createAggregator(function(result2, value, key) {
-    if (hasOwnProperty$6.call(result2, key)) {
+    if (hasOwnProperty$7.call(result2, key)) {
       result2[key].push(value);
     } else {
       baseAssignValue(result2, key, [value]);
@@ -4220,10 +4225,10 @@ var FastAxios = (function(exports, axios2) {
   var gte = createRelationalOperation(function(value, other) {
     return value >= other;
   });
-  var objectProto$6 = Object.prototype;
-  var hasOwnProperty$5 = objectProto$6.hasOwnProperty;
+  var objectProto$7 = Object.prototype;
+  var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
   function baseHas(object2, key) {
-    return object2 != null && hasOwnProperty$5.call(object2, key);
+    return object2 != null && hasOwnProperty$6.call(object2, key);
   }
   function has(object2, path) {
     return object2 != null && hasPath(object2, path, baseHas);
@@ -4349,22 +4354,22 @@ var FastAxios = (function(exports, axios2) {
       return baseInverter(object2, setter, toIteratee(iteratee2), {});
     };
   }
-  var objectProto$5 = Object.prototype;
-  var nativeObjectToString$1 = objectProto$5.toString;
+  var objectProto$6 = Object.prototype;
+  var nativeObjectToString$1 = objectProto$6.toString;
   var invert = createInverter(function(result2, value, key) {
     if (value != null && typeof value.toString != "function") {
       value = nativeObjectToString$1.call(value);
     }
     result2[value] = key;
   }, constant(identity));
-  var objectProto$4 = Object.prototype;
-  var hasOwnProperty$4 = objectProto$4.hasOwnProperty;
-  var nativeObjectToString = objectProto$4.toString;
+  var objectProto$5 = Object.prototype;
+  var hasOwnProperty$5 = objectProto$5.hasOwnProperty;
+  var nativeObjectToString = objectProto$5.toString;
   var invertBy = createInverter(function(result2, value, key) {
     if (value != null && typeof value.toString != "function") {
       value = nativeObjectToString.call(value);
     }
-    if (hasOwnProperty$4.call(result2, value)) {
+    if (hasOwnProperty$5.call(result2, value)) {
       result2[value].push(key);
     } else {
       result2[value] = [key];
@@ -4407,8 +4412,8 @@ var FastAxios = (function(exports, axios2) {
     return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
   }
   var mapTag$2 = "[object Map]", setTag$2 = "[object Set]";
-  var objectProto$3 = Object.prototype;
-  var hasOwnProperty$3 = objectProto$3.hasOwnProperty;
+  var objectProto$4 = Object.prototype;
+  var hasOwnProperty$4 = objectProto$4.hasOwnProperty;
   function isEmpty(value) {
     if (value == null) {
       return true;
@@ -4424,7 +4429,7 @@ var FastAxios = (function(exports, axios2) {
       return !baseKeys(value).length;
     }
     for (var key in value) {
-      if (hasOwnProperty$3.call(value, key)) {
+      if (hasOwnProperty$4.call(value, key)) {
         return false;
       }
     }
@@ -4712,10 +4717,32 @@ var FastAxios = (function(exports, axios2) {
       return baseNth(args, n);
     });
   }
+  var objectProto$3 = Object.prototype;
+  var hasOwnProperty$3 = objectProto$3.hasOwnProperty;
   function baseUnset(object2, path) {
     path = castPath(path, object2);
-    object2 = parent(object2, path);
-    return object2 == null || delete object2[toKey(last(path))];
+    var index = -1, length = path.length;
+    if (!length) {
+      return true;
+    }
+    var isRootPrimitive = object2 == null || typeof object2 !== "object" && typeof object2 !== "function";
+    while (++index < length) {
+      var key = path[index];
+      if (typeof key !== "string") {
+        continue;
+      }
+      if (key === "__proto__" && !hasOwnProperty$3.call(object2, "__proto__")) {
+        return false;
+      }
+      if (key === "constructor" && index + 1 < length && typeof path[index + 1] === "string" && path[index + 1] === "prototype") {
+        if (isRootPrimitive && index === 0) {
+          continue;
+        }
+        return false;
+      }
+    }
+    var obj = parent(object2, path);
+    return obj == null || delete obj[toKey(last(path))];
   }
   function customOmitClone(value) {
     return isPlainObject(value) ? void 0 : value;
@@ -6488,7 +6515,7 @@ var FastAxios = (function(exports, axios2) {
       }
     return result2;
   }
-  var VERSION = "4.17.21";
+  var VERSION = "4.17.22";
   var WRAP_BIND_KEY_FLAG = 2;
   var LAZY_FILTER_FLAG = 1, LAZY_WHILE_FLAG = 3;
   var MAX_ARRAY_LENGTH = 4294967295;
@@ -7227,7 +7254,6 @@ var FastAxios = (function(exports, axios2) {
     }
   }
   class FastAxios2 {
-    // eslint-disable-next-line no-use-before-define
     static instance;
     constructor(options) {
       this.setOptions(options);

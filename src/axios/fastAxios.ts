@@ -3,13 +3,11 @@ import { isNil } from "lodash-unified";
 import { CacheManage, CryptoManage, InterceptorsManage, LoadingManage, MessageBoxManage, MessageManage } from "./types";
 import type { AxiosHeaderValue } from "axios";
 
-// eslint-disable-next-line no-use-before-define
 type InitializeOptions = Partial<Pick<FastAxios, "baseUrl" | "timeout" | "headers" | "requestCipher">>;
 
 type CodeKeyType = string | number;
 
 class FastAxios {
-	// eslint-disable-next-line no-use-before-define
 	static instance: FastAxios;
 
 	constructor(options?: InitializeOptions) {

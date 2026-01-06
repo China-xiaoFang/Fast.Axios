@@ -18,6 +18,13 @@ const request: Method = (config) => {
 			success(result) {
 				if (!task) return;
 
+				// 兼容钉钉安卓返回的header格式
+				if (Array.isArray(result.header)) {
+					const dingHeader = {};
+					result.header.forEach((h) => Object.assign(dingHeader, h));
+					result.header = dingHeader;
+				}
+
 				const headers = new AxiosHeaders(result.header);
 				const response: AxiosResponse = {
 					config: responseConfig,
