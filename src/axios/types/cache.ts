@@ -18,7 +18,7 @@ export class CacheManage {
 
 	constructor() {
 		this._handle = {
-			get: (key: string): void => {
+			get: (key: string): any => {
 				if (!this._cacheRecord.has(key)) {
 					return null;
 				}
@@ -30,8 +30,8 @@ export class CacheManage {
 			},
 		};
 
-		const getProxy: CacheGetHandle & CacheGetUseHandle = (key: string): void => {
-			this._handle.get(key);
+		const getProxy: CacheGetHandle & CacheGetUseHandle = (key: string): any => {
+			return this._handle.get(key);
 		};
 		getProxy.use = (fn: CacheGetHandle): void => {
 			this._handle.get = fn;

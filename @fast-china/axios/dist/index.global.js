@@ -7028,7 +7028,7 @@ var FastAxios = (function(exports, axios2) {
         }
       };
       const getProxy = (key) => {
-        this._handle.get(key);
+        return this._handle.get(key);
       };
       getProxy.use = (fn) => {
         this._handle.get = fn;
