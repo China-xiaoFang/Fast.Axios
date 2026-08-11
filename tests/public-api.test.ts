@@ -1,5 +1,4 @@
 // 本文件只参与 TypeScript 编译，用于验证消费者可见的根入口、子路径和 Axios 类型扩展。
-import axios from "axios";
 import {
 	type ApiResponse,
 	type FastAxiosRequestConfig,
@@ -12,6 +11,7 @@ import {
 } from "@fast-china/axios";
 import vitePlugin from "@fast-china/axios/vite";
 import webpackPlugin from "@fast-china/axios/webpack";
+import axios from "axios";
 import type { AxiosAdapter, AxiosResponse } from "axios";
 
 interface User {
