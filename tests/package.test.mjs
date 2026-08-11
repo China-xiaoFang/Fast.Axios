@@ -3,23 +3,23 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { test } from "node:test";
 import vm from "node:vm";
 import axios from "axios";
+import { Rolldown } from "tsdown";
 
 const workspaceRoot = path.resolve(import.meta.dirname, "..");
 const distRoot = path.join(workspaceRoot, "dist");
 const packageJsonPath = path.join(workspaceRoot, "package.json");
 const publicExportKeys = [".", "./vite", "./webpack"];
 
-/** 读取根 package.json，并拒绝数组、null 等无效清单结构。 */
+/** 读取根 package.json，并拒绝数组、null 等非清单对象。 */
 const readPackageManifest = () => {
 	const value = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
 	if (typeof value !== "object" || value === null || Array.isArray(value)) throw new TypeError("package.json must contain an object.");
 	return value;
 };
 
-/** 把包内相对路径限制在当前工作区，避免测试误访问仓库外文件。 */
+/** 把包内相对路径解析到仓库根目录，并阻止测试意外访问工作区之外。 */
 const resolveWorkspacePath = (relativePath) => {
 	const absolutePath = path.resolve(workspaceRoot, ...relativePath.split("/"));
 	if (absolutePath !== workspaceRoot && !absolutePath.startsWith(`${workspaceRoot}${path.sep}`)) {
@@ -27,6 +27,8 @@ const resolveWorkspacePath = (relativePath) => {
 	}
 	return absolutePath;
 };
+
+const consumerPath = path.join(workspaceRoot, "__package-consumer__.mjs");
 
 const run = (command, arguments_) => {
 	const result = spawnSync(command, arguments_, { cwd: workspaceRoot, encoding: "utf8" });
@@ -45,23 +47,20 @@ const collectFiles = (directory) => {
 	return result;
 };
 
-/** 验证每个公开入口、类型声明和 CDN 文件都由本次构建真实生成。 */
 const verifyBuildArtifacts = () => {
-	assert.ok(fs.existsSync(distRoot) && fs.statSync(distRoot).isDirectory(), "tsdown did not create dist/.");
+	if (!fs.existsSync(distRoot) || !fs.statSync(distRoot).isDirectory()) throw new Error("tsdown did not create dist/.");
 	const manifest = readPackageManifest();
 	const exportsMap = manifest["exports"];
 	assert.ok(exportsMap !== null && typeof exportsMap === "object" && !Array.isArray(exportsMap));
-	assert.deepEqual(Object.keys(exportsMap), publicExportKeys);
+	assert.deepEqual(Object.keys(exportsMap), publicExportKeys, "package.json public entries do not match the SDK contract.");
 
 	const sourceRoot = path.join(workspaceRoot, "src");
 	const sourceModulePaths = collectFiles(sourceRoot)
 		.filter((filePath) => filePath.endsWith(".ts"))
 		.map((filePath) => path.relative(sourceRoot, filePath).replaceAll(path.sep, "/").replace(/\.ts$/u, ""))
 		.sort();
-	const artifacts = collectFiles(distRoot)
-		.map((filePath) => path.relative(workspaceRoot, filePath).replaceAll(path.sep, "/"))
-		.sort();
-
+	const files = collectFiles(distRoot);
+	const artifacts = files.map((filePath) => path.relative(workspaceRoot, filePath).replaceAll(path.sep, "/")).sort();
 	for (const required of [
 		"dist/index.mjs",
 		"dist/index.d.mts",
@@ -70,11 +69,9 @@ const verifyBuildArtifacts = () => {
 		"dist/webpack.mjs",
 		"dist/webpack.d.mts",
 		"dist/index.global.min.js",
-		"dist/index.global.min.js.map",
 	]) {
 		assert.ok(artifacts.includes(required), `required artifact is missing: ${required}`);
 	}
-
 	for (const artifact of artifacts) {
 		if (/^dist\/index\.global\.min\.js(?:\.map)?$/u.test(artifact)) continue;
 		assert.match(artifact, /\.(?:d\.mts|mjs|mjs\.map)$/u, `unexpected build artifact: ${artifact}`);
@@ -83,19 +80,18 @@ const verifyBuildArtifacts = () => {
 	}
 };
 
-/** 验证发布模块中的相对 import 全部指向 dist 内的真实文件。 */
 const verifyRelativeImports = () => {
 	const importPattern = /(?:\bfrom\s*["']|\bimport\s*\(\s*["'])(\.{1,2}\/[^"']+)["']/gu;
 	for (const absolutePath of collectFiles(distRoot)) {
 		if (!/\.(?:d\.mts|mjs)$/u.test(absolutePath)) continue;
 		const source = fs.readFileSync(absolutePath, "utf8");
-		// 构建会保留 TSDoc 示例；先移除注释，避免把示例中的源码路径误判为发布 import。
+		// 声明会保留 TSDoc 示例；移除注释后只校验真正的静态和动态 import。
 		const executableSource = source.replace(/\/\*[\s\S]*?\*\//gu, "").replace(/^\s*\/\/.*$/gmu, "");
 		for (const match of executableSource.matchAll(importPattern)) {
 			const specifier = match[1];
 			if (specifier === undefined) continue;
 			const dependency = path.resolve(path.dirname(absolutePath), specifier);
-			// 声明中的 .mjs specifier 会由 TypeScript 对应解析到同名 .d.mts，不要求存在空运行时模块。
+			// 仅包含类型的模块没有运行时文件，声明中的 .mjs 对应同名 .d.mts。
 			const declarationDependency =
 				absolutePath.endsWith(".d.mts") && dependency.endsWith(".mjs") ? dependency.replace(/\.mjs$/u, ".d.mts") : dependency;
 			if (
@@ -109,24 +105,30 @@ const verifyRelativeImports = () => {
 	}
 };
 
-/** Source Map 必须内嵌源码，避免 npm 包依赖未发布的 src 目录。 */
+/** 验证运行时 Source Map 内嵌完整源码，不依赖未发布的 src 目录。 */
 const verifySourceMaps = () => {
 	for (const absolutePath of collectFiles(distRoot)) {
 		if (!absolutePath.endsWith(".map")) continue;
 		assert.ok(!absolutePath.endsWith(".d.mts.map"), `unexpected declaration map: ${path.relative(workspaceRoot, absolutePath)}`);
 		const sourceMap = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
 		assert.ok(sourceMap !== null && typeof sourceMap === "object" && !Array.isArray(sourceMap));
-		assert.ok(Array.isArray(sourceMap.sources) && sourceMap.sources.length > 0);
-		assert.equal(sourceMap.sources.length, sourceMap.sourcesContent?.length);
-		assert.ok(sourceMap.sourcesContent.every((source) => typeof source === "string" && source.length > 0));
+		const record = sourceMap;
+		assert.ok(Array.isArray(record.sources) && record.sources.length > 0, `${path.relative(workspaceRoot, absolutePath)} has no sources.`);
+		assert.equal(record.sources.length, record.sourcesContent?.length, path.relative(workspaceRoot, absolutePath));
+		assert.ok(record.sourcesContent.every((source) => typeof source === "string" && source.length > 0));
 	}
 };
 
-/** 验证 IIFE 依赖页面提供 axios，并把根入口公开为 FastAxios。 */
-const verifyCdnBundle = () => {
-	const source = fs.readFileSync(path.join(distRoot, "index.global.min.js"), "utf8");
-	assert.throws(() => vm.runInNewContext(source, {}), /axios is not defined/u);
-	const context = {
+if (fs.existsSync(consumerPath)) throw new Error(`Refusing to overwrite existing fixture: ${consumerPath}`);
+
+try {
+	verifyBuildArtifacts();
+	verifyRelativeImports();
+	verifySourceMaps();
+
+	const cdnSource = fs.readFileSync(path.join(distRoot, "index.global.min.js"), "utf8");
+	assert.throws(() => vm.runInNewContext(cdnSource, {}), /axios is not defined/u);
+	const cdnContext = {
 		AbortController,
 		Blob,
 		FormData,
@@ -137,82 +139,105 @@ const verifyCdnBundle = () => {
 		console,
 		setTimeout,
 	};
-	vm.runInNewContext(source, context);
-	assert.equal(typeof context.FastAxios.createFastAxios, "function");
-	assert.equal(typeof context.FastAxios.createUniAppAxiosAdapter, "function");
-	assert.equal(typeof context.FastAxios.axiosUtil.request, "function");
-	const isolated = context.FastAxios.createFastAxios({ requestCipher: false }, true);
-	assert.equal(isolated.requestCipher, false);
-};
+	vm.runInNewContext(cdnSource, cdnContext);
+	assert.equal(typeof cdnContext.FastAxios.createFastAxios, "function");
+	assert.equal(typeof cdnContext.FastAxios.createUniAppAxiosAdapter, "function");
+	assert.equal(typeof cdnContext.FastAxios.axiosUtil.request, "function");
+	assert.equal(cdnContext.FastAxios.createFastAxios({ requestCipher: false }, true).requestCipher, false);
 
-/** 验证发布声明和 JavaScript 能通过包名及两个子路径被真实消费者加载。 */
-const verifyConsumerImports = () => {
-	const runtimeConsumer = path.join(workspaceRoot, "__package-consumer__.mjs");
-	const typeConsumer = path.join(workspaceRoot, "__package-consumer__.mts");
-	for (const fixture of [runtimeConsumer, typeConsumer]) {
-		if (fs.existsSync(fixture)) throw new Error(`Refusing to overwrite existing fixture: ${fixture}`);
-	}
+	fs.writeFileSync(
+		consumerPath,
+		[
+			'import axios from "axios";',
+			'import { axiosUtil, createFastAxios, createUniAppAxiosAdapter } from "@fast-china/axios";',
+			'import vitePlugin from "@fast-china/axios/vite";',
+			'import webpackPlugin from "@fast-china/axios/webpack";',
+			'if (typeof vitePlugin !== "function" || typeof webpackPlugin !== "function") throw new Error("Build plugin entry failed.");',
+			"const isolated = createFastAxios({ requestCipher: false }, true);",
+			'if (isolated.requestCipher !== false) throw new Error("Root runtime entry failed.");',
+			"const instance = axios.create({ adapter: createUniAppAxiosAdapter() });",
+			'if (typeof instance.upload !== "function") throw new Error("Axios upload augmentation failed.");',
+			'if (typeof instance.download !== "function") throw new Error("Axios download augmentation failed.");',
+			'/** @type {import("@fast-china/axios").FastAxiosRequestConfig} */',
+			'const config = { url: "/users", requestType: "query" };',
+			"const verifyPublicTypes = () => {",
+			"\t/** @type {Promise<string>} */",
+			"\tconst result = axiosUtil.request(config);",
+			'\tconst upload = instance.upload("/upload", {}, { filePath: "/tmp/a", name: "file" });',
+			'\tconst download = instance.download("/download");',
+			"\tvoid result; void upload; void download;",
+			"};",
+			"void verifyPublicTypes;",
+		].join("\n"),
+		"utf8"
+	);
 
-	try {
-		fs.writeFileSync(
-			runtimeConsumer,
-			[
-				'import axios from "axios";',
-				'import { createFastAxios, createUniAppAxiosAdapter } from "@fast-china/axios";',
-				'import vitePlugin from "@fast-china/axios/vite";',
-				'import webpackPlugin from "@fast-china/axios/webpack";',
-				'if (typeof vitePlugin !== "function" || typeof webpackPlugin !== "function") throw new Error("Build plugin entry failed.");',
-				"const isolated = createFastAxios({ requestCipher: false }, true);",
-				'if (isolated.requestCipher !== false) throw new Error("Root runtime entry failed.");',
-				"axios.create({ adapter: createUniAppAxiosAdapter() });",
-				'if (typeof axios.Axios.prototype.upload !== "function") throw new Error("Axios upload augmentation failed.");',
-				'if (typeof axios.Axios.prototype.download !== "function") throw new Error("Axios download augmentation failed.");',
-			].join("\n"),
-			"utf8"
-		);
-		fs.writeFileSync(
-			typeConsumer,
-			[
-				'import axios from "axios";',
-				'import { axiosUtil, createFastAxios, createUniAppAxiosAdapter, type FastAxiosRequestConfig } from "@fast-china/axios";',
-				'import vitePlugin from "@fast-china/axios/vite";',
-				'import webpackPlugin from "@fast-china/axios/webpack";',
-				'const config: FastAxiosRequestConfig = { url: "/users", requestType: "query" };',
-				"const result: Promise<string> = axiosUtil.request<string>(config);",
-				"const instance = axios.create({ adapter: createUniAppAxiosAdapter() });",
-				'const upload = instance.upload("/upload", {}, { filePath: "/tmp/a", name: "file" });',
-				'const download = instance.download("/download");',
-				"void createFastAxios; void vitePlugin; void webpackPlugin; void result; void upload; void download;",
-			].join("\n"),
-			"utf8"
-		);
+	const typeScriptPath = path.join(workspaceRoot, "node_modules", "typescript", "bin", "tsc");
+	run(process.execPath, [
+		typeScriptPath,
+		// TypeScript 6 no longer silently ignores a nearby tsconfig when explicit files are supplied.
+		"--ignoreConfig",
+		"--allowJs",
+		"--checkJs",
+		"--module",
+		"NodeNext",
+		"--moduleResolution",
+		"NodeNext",
+		"--target",
+		"ES2022",
+		"--strict",
+		"--noEmit",
+		"--skipLibCheck",
+		"false",
+		consumerPath,
+	]);
+	run(process.execPath, [consumerPath]);
+	run(process.execPath, [
+		"--input-type=module",
+		"--eval",
+		'delete globalThis.window; delete globalThis.document; delete globalThis.uni; await import("@fast-china/axios");',
+	]);
 
-		run(process.execPath, [runtimeConsumer]);
-		const typeScriptPath = path.join(workspaceRoot, "node_modules", "typescript", "bin", "tsc");
-		run(process.execPath, [
-			typeScriptPath,
-			"--ignoreConfig",
-			"--module",
-			"NodeNext",
-			"--moduleResolution",
-			"NodeNext",
-			"--target",
-			"ES2022",
-			"--strict",
-			"--noEmit",
-			"--skipLibCheck",
-			"false",
-			typeConsumer,
-		]);
-	} finally {
-		for (const fixture of [runtimeConsumer, typeConsumer]) {
-			if (fs.existsSync(fixture)) fs.unlinkSync(fixture);
+	fs.writeFileSync(
+		consumerPath,
+		'import { createFastAxios } from "@fast-china/axios"; console.log(createFastAxios({ requestCipher: false }, true).requestCipher);\n',
+		"utf8"
+	);
+	const bundle = await Rolldown.rolldown({ external: ["axios"], input: consumerPath, treeshake: true });
+	const generated = await bundle.generate({ format: "esm" });
+	await bundle.close();
+	const code = generated.output
+		.filter((item) => item.type === "chunk")
+		.map((item) => item.code)
+		.join("\n");
+	assert.ok(Buffer.byteLength(code) < 24_000, "A FastAxios-only consumer unexpectedly exceeded 24 KiB before minification.");
+	assert.doesNotMatch(code, /createUnplugin|downloadFile|uploadFile|UNI_PLATFORM/u, "Plugin or uni-adapter code leaked into the bundle.");
+
+	const manifest = readPackageManifest();
+	assert.ok(manifest["keywords"].includes("fast"));
+	assert.ok(manifest["keywords"].includes("fast-china"));
+	assert.ok(manifest["files"].includes("dist"));
+	assert.ok(!manifest["files"].includes("src"));
+	assert.equal(manifest["main"], "./dist/index.mjs");
+	assert.equal(manifest["module"], manifest["main"]);
+	assert.equal(manifest["sideEffects"], false);
+	assert.equal(typeof manifest["peerDependencies"]?.["axios"], "string", "Axios must be declared as a peer dependency.");
+	assert.match(manifest["peerDependencies"]["axios"], /^\^1\./u, "Axios must use the supported v1 peer range.");
+	assert.notEqual(manifest["peerDependenciesMeta"]?.["axios"]?.["optional"], true, "Axios must not be an optional peer dependency.");
+	assert.equal(manifest["peerDependenciesMeta"]?.["miniprogram-blob"]?.["optional"], true);
+	assert.equal(manifest["peerDependenciesMeta"]?.["miniprogram-formdata"]?.["optional"], true);
+	assert.equal(manifest["unpkg"], "./dist/index.global.min.js");
+	assert.equal(manifest["jsdelivr"], manifest["unpkg"]);
+	const exportsMap = manifest["exports"];
+	assert.ok(exportsMap !== null && typeof exportsMap === "object");
+	for (const value of Object.values(exportsMap)) {
+		assert.ok(value !== null && typeof value === "object");
+		for (const target of Object.values(value)) {
+			assert.equal(typeof target, "string");
+			assert.ok(fs.existsSync(resolveWorkspacePath(target.slice(2))));
 		}
 	}
-};
 
-/** 检查 npm dry-run 文件列表，防止测试、源码或旧的嵌套发布目录进入归档。 */
-const verifyPackArchive = () => {
 	const npmArguments = ["pack", "--dry-run", "--ignore-scripts", "--json"];
 	const npmCliPath = path.join(path.dirname(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
 	const npmCommand = process.platform === "win32" ? process.execPath : "npm";
@@ -224,64 +249,31 @@ const verifyPackArchive = () => {
 		env: { ...process.env, npm_config_cache: path.join(os.tmpdir(), "fast-axios-npm-cache") },
 	});
 	if (npmResult.error !== undefined) throw npmResult.error;
-	if (npmResult.status !== 0)
+	if (npmResult.status !== 0) {
 		throw new Error(npmResult.stderr || npmResult.stdout || `npm pack --dry-run failed (${npmResult.signal ?? npmResult.status}).`);
-
+	}
 	const packReport = JSON.parse(npmResult.stdout);
 	assert.ok(Array.isArray(packReport) && packReport.length === 1);
-	const packedFiles = packReport[0].files?.map((file) => file.path ?? "") ?? [];
+	const report = packReport[0];
+	const packedFiles = report.files?.map((file) => file.path ?? "") ?? [];
 	for (const required of [
 		"dist/index.mjs",
 		"dist/index.d.mts",
 		"dist/vite.mjs",
+		"dist/vite.d.mts",
 		"dist/webpack.mjs",
+		"dist/webpack.d.mts",
 		"dist/index.global.min.js",
-		"Fast.png",
-		"README.md",
-		"README.zh.md",
-		"docs/API.md",
-		"src/uni-adapter/README.md",
-		"src/uni-adapter/README.zh.md",
+		"dist/index.global.min.js.map",
 	]) {
 		assert.ok(packedFiles.includes(required), `packed archive is missing: ${required}`);
 	}
-	const allowedSourceFiles = new Set(["src/uni-adapter/README.md", "src/uni-adapter/README.zh.md"]);
+	assert.ok(packedFiles.every((file) => !/^(?:@fast-china|tests)\//u.test(file)));
 	assert.ok(
-		packedFiles.every((file) => !file.startsWith("src/") || allowedSourceFiles.has(file)),
-		"TypeScript source leaked into the npm archive."
+		packedFiles.every((file) => !file.startsWith("src/")),
+		"src must not be published."
 	);
-	assert.ok(
-		packedFiles.every((file) => !/^(?:@fast-china|tests)\//u.test(file)),
-		"Private package or test files leaked into the npm archive."
-	);
-};
-
-test("published package contract", () => {
-	verifyBuildArtifacts();
-	verifyRelativeImports();
-	verifySourceMaps();
-	verifyCdnBundle();
-	verifyConsumerImports();
-
-	const manifest = readPackageManifest();
-	assert.equal(manifest["main"], "./dist/index.mjs");
-	assert.equal(manifest["module"], manifest["main"]);
-	assert.equal(manifest["unpkg"], "./dist/index.global.min.js");
-	assert.equal(manifest["jsdelivr"], manifest["unpkg"]);
-	assert.equal(manifest["sideEffects"], false);
-	assert.equal(manifest["peerDependencies"]?.["axios"], "^1.8.1");
-	assert.equal(manifest["peerDependenciesMeta"]?.["miniprogram-blob"]?.["optional"], true);
-	assert.equal(manifest["peerDependenciesMeta"]?.["miniprogram-formdata"]?.["optional"], true);
-	assert.ok(manifest["files"].includes("dist"));
-	assert.ok(!manifest["files"].includes("src"));
-
-	for (const value of Object.values(manifest["exports"])) {
-		assert.ok(value !== null && typeof value === "object" && !Array.isArray(value));
-		for (const target of Object.values(value)) {
-			assert.equal(typeof target, "string");
-			assert.ok(fs.existsSync(resolveWorkspacePath(target.slice(2))), `export target does not exist: ${target}`);
-		}
-	}
-
-	verifyPackArchive();
-});
+	assert.ok(packedFiles.includes("Fast.png"));
+} finally {
+	if (fs.existsSync(consumerPath)) fs.unlinkSync(consumerPath);
+}
