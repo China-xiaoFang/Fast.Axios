@@ -1,3 +1,4 @@
+/** axios 模块内部管理器与公开请求配置类型的统一导出入口。 */
 export * from "./cache";
 export * from "./crypto";
 export * from "./interceptors";

@@ -1,2 +1,0 @@
-class e{_handle;get;set;_cacheRecord=/* @__PURE__ */new Map;constructor(){this._handle={get:e=>this._cacheRecord.has(e)?this._cacheRecord.get(e):null,set:(e,t)=>{this._cacheRecord.set(e,t)}};const e=e=>this._handle.get(e);e.use=e=>{this._handle.get=e},this.get=e;const t=(e,t)=>{this._handle.set(e,t)};t.use=e=>{this._handle.set=e},this.set=t}}export{e as CacheManage};
-//# sourceMappingURL=cache.mjs.map

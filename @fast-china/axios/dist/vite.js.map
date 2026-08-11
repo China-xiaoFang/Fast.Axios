@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/vite.ts"],"names":[],"mappings":";;;AAEA,IAAO,eAAQ,QAAA,CAAS","file":"vite.js","sourcesContent":["import { unplugin } from \"./unplugin\";\n\nexport default unplugin.vite;\n"]}

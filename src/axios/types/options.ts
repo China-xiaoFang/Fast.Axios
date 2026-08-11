@@ -1,109 +1,121 @@
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
 
 /**
- * RESTful风格Api响应
+ * Fast.NET RESTful 接口的标准响应结构。
+ *
+ * 字段保持可选，以支持无响应体、文件响应以及部分接口只返回 code/message 的场景。
  */
-export type ApiResponse<Output = any, Input = any> = {
+export interface ApiResponse<Output = unknown, Input = unknown> {
 	/**
-	 * 执行成功
+	 * 业务执行结果；显式为 false 时，即使 HTTP/code 成功也按业务错误处理。
 	 */
 	success?: boolean;
 	/**
-	 * 状态码
+	 * Fast 业务状态码；未返回时使用 HTTP status 参与成功判断。
 	 */
 	code?: number;
 	/**
-	 * 错误信息
+	 * 业务提示内容；允许对象，由消息处理流程安全序列化后展示。
 	 */
-	message?: string;
+	message?: unknown;
 	/**
-	 * 数据
+	 * 接口业务数据；开启 simpleDataFormat 后直接作为请求结果返回。
 	 */
 	data?: Output;
 	/**
-	 * 时间戳
+	 * 服务端生成响应时的时间戳。
 	 */
 	timestamp?: number;
 	/**
-	 * 响应
+	 * 服务端可选附带的原始响应信息，不等同于当前客户端收到的 AxiosResponse。
 	 */
 	response?: AxiosResponse<Output, Input>;
-};
+}
 
 /**
- * 请求类型
+ * Fast.NET OpenAPI 最终生成的业务请求类型。
+ *
+ * 与 `HttpRequestActionEnum` 经 `OpenApiUtil.DisposeRequestAction()` 转换后的字符串严格同步：
+ * `Paged`/`Query` 统一为 `query`，`None`/`Notify`/`Other` 统一为 `other`。
+ * `download`/`export` 进入文件响应流程；`upload` 和其余值保留为 Fast 业务分类。
+ * uni adapter 是否调用文件 API 仍由 `method: "upload" | "download"` 决定。
  */
-export type RequestType = "auth" | "query" | "add" | "edit" | "delete" | "submit" | "upload"| "preview" | "download" | "import" | "export" | "callback" | "other";
+export type RequestType =
+	"auth" | "query" | "add" | "edit" | "delete" | "submit" | "upload" | "download" | "export" | "import" | "callback" | "other";
 
 /**
- * Axios 选项
+ * Fast 请求流程在 AxiosRequestConfig 之外识别的扩展选项。
  */
-export type AxiosOptions = {
+export interface AxiosOptions {
 	/**
-	 * 是否开启取消重复请求, 默认为
+	 * 是否取消相同 URL、Method、参数和请求体的上一条未完成请求。
 	 * @default true
 	 */
 	cancelDuplicateRequest?: boolean;
 	/**
-	 * 是否开启loading层效果
+	 * 是否在请求生命周期内调用全局 Loading 的 show/close 处理器。
 	 * @default false
 	 */
 	loading?: boolean;
 	/**
-	 * 加载文字
+	 * 传给 Loading show 处理器的提示文字。
 	 * @default '加载中...'
 	 */
 	loadingText?: string;
 	/**
-	 * 是否开启缓存，只有Get请求才行
+	 * 是否读取和写入请求缓存；仅 GET + RESTful + simpleDataFormat 请求生效。
 	 * @default false
 	 */
 	cache?: boolean;
 	/**
-	 * Get请求缓存问题处理
+	 * 未启用请求加密时，为 GET 参数追加时间戳以绕过浏览器或代理缓存。
 	 * @default true
 	 */
 	getMethodCacheHandle?: boolean;
 	/**
-	 * 是否开启简洁的数据结构响应
-	 * - 只有响应格式是JSON并且是RESTFUL风格返回的才开启
+	 * 是否从 Fast RESTful 响应中直接返回 `data` 字段。
+	 *
+	 * 只对 JSON + RESTful 响应执行拆包；文件和其他响应类型保持各自返回结构。
 	 * @default true
 	 */
 	simpleDataFormat?: boolean;
 	/**
-	 * 是否开启接口错误信息展示
+	 * 是否通过 Message error 处理器展示 HTTP、网络和超时错误。
 	 * @default true
 	 */
 	showErrorMessage?: boolean;
 	/**
-	 * 是否开启code信息提示
-	 * - code >= 200 && code <= 299 则不提示
+	 * 是否展示 Fast RESTful 业务错误信息。
+	 *
+	 * code 不在 200-299 或 success 为 false 时触发。
 	 * @default true
-	 * @description 只有RESTFUL风格返回的才开启
 	 */
 	showCodeMessage?: boolean;
 	/**
-	 * 是否开启自动下载文件
-	 * - 只有 responseType 配置了 "blob" 才会自动下载
-	 * - UniApp下不可用
+	 * 是否在浏览器收到 download/export 或 Blob 响应后自动保存文件。
+	 *
+	 * uni-app 不执行浏览器保存逻辑，调用方从响应 data 获取临时文件路径。
 	 * @default true
 	 */
 	autoDownloadFile?: boolean;
 	/**
-	 * 请求加密，优先级高于 useAxios().requestCipher
+	 * 是否启用请求加密和响应解密，优先级高于 `createFastAxios().requestCipher`。
 	 * @default undefined
 	 */
 	requestCipher?: boolean;
 	/**
-	 * RESTFUL风格返回
+	 * 是否按 `ApiResponse` 结构校验业务 code/success 并处理 data。
 	 * @default true
 	 */
 	restfulResult?: boolean;
-};
+}
 
-export type FastAxiosRequestConfig<Input> = AxiosRequestConfig<Input> & {
+export interface FastAxiosRequestConfig<Input = unknown> extends AxiosRequestConfig<Input>, AxiosOptions {
 	/**
-	 * 请求类型
+	 * Fast.NET OpenAPI 生成的业务请求类型。
+	 *
+	 * 该字段用于 Fast 业务响应处理；uni adapter 的文件任务仍由 `method: "upload" | "download"` 选择。
+	 * `download`/`export` 在浏览器未指定 responseType 时默认接收 Blob。
 	 */
 	requestType: RequestType;
-} & AxiosOptions;
+}

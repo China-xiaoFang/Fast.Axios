@@ -1,42 +1,65 @@
 import type { AxiosOptions } from "./options";
 
+/** 显示 Loading 的处理函数，参数为当前请求配置的提示文字。 */
 type LoadingShowHandle = (text: string) => void;
-type LoadingShowUseHandle = { use: (fn: LoadingShowHandle) => void };
+/** 为 Loading 显示函数附加实现替换入口。 */
+interface LoadingShowUseHandle {
+	/** 使用新的 Loading 显示函数替换当前实现。 */
+	use: (fn: LoadingShowHandle) => void;
+}
+/** 关闭 Loading 的处理函数，可根据请求选项处理并发计数等逻辑。 */
 type LoadingCloseHandle = (options: AxiosOptions) => void;
-type LoadingCloseUseHandle = { use: (fn: LoadingCloseHandle) => void };
+/** 为 Loading 关闭函数附加实现替换入口。 */
+interface LoadingCloseUseHandle {
+	/** 使用新的 Loading 关闭函数替换当前实现。 */
+	use: (fn: LoadingCloseHandle) => void;
+}
 
+/**
+ * 请求 Loading 生命周期处理器。
+ *
+ * 默认实现为空；Fast 项目应通过 `.use()` 接入自己的 UI 组件，并自行处理并发请求计数。
+ */
 export class LoadingManage {
+	/** 当前实际执行的显示与关闭函数。 */
 	private _handle: {
 		show: LoadingShowHandle;
 		close: LoadingCloseHandle;
 	};
 
-	/** 显示 */
+	/** 请求发送前显示 Loading。 */
 	readonly show: LoadingShowHandle & LoadingShowUseHandle;
-	/** 关闭 */
+	/** 请求成功或失败后关闭 Loading，并接收当前 Fast 请求选项。 */
 	readonly close: LoadingCloseHandle & LoadingCloseUseHandle;
 
+	/** 创建默认不操作任何 UI 的 Loading 处理器。 */
 	constructor() {
 		this._handle = {
-			show: (text: string): void => {
+			// SDK 不依赖具体 UI 库，因此默认显示函数为空实现。
+			show: (_text: string): void => {
 				return;
 			},
-			close: (options: AxiosOptions): void => {
+			// 默认关闭函数同样为空，由项目按所用 UI 框架自行接入。
+			close: (_options: AxiosOptions): void => {
 				return;
 			},
 		};
 
+		// 显示代理保留稳定引用，并在调用时读取最新注册的实现。
 		const showProxy: LoadingShowHandle & LoadingShowUseHandle = (text: string): void => {
 			this._handle.show(text);
 		};
+		// 替换后续请求的显示逻辑，不会立即触发 Loading。
 		showProxy.use = (fn: LoadingShowHandle): void => {
 			this._handle.show = fn;
 		};
 		this.show = showProxy;
 
+		// 关闭代理会把本次请求的 Fast 配置传给项目实现。
 		const closeProxy: LoadingCloseHandle & LoadingCloseUseHandle = (options: AxiosOptions): void => {
 			this._handle.close(options);
 		};
+		// 替换后续请求的关闭逻辑，不会立即关闭当前 Loading。
 		closeProxy.use = (fn: LoadingCloseHandle): void => {
 			this._handle.close = fn;
 		};

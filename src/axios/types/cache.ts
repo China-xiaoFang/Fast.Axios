@@ -1,46 +1,71 @@
-type CacheGetHandle = (key: string) => any;
-type CacheGetUseHandle = { use: (fn: CacheGetHandle) => void };
-type CacheSetHandle = (key: string, value: any) => void;
-type CacheSetUseHandle = { use: (fn: CacheSetHandle) => void };
+/** 根据请求唯一标识读取缓存；未命中时应返回 `null` 或 `undefined`。 */
+type CacheGetHandle = (key: string) => unknown;
+/** 为缓存读取函数附加实现替换入口。 */
+interface CacheGetUseHandle {
+	/** 使用新的缓存读取函数替换当前实现。 */
+	use: (fn: CacheGetHandle) => void;
+}
+/** 将请求最终返回值写入指定缓存键。 */
+type CacheSetHandle = (key: string, value: unknown) => void;
+/** 为缓存写入函数附加实现替换入口。 */
+interface CacheSetUseHandle {
+	/** 使用新的缓存写入函数替换当前实现。 */
+	use: (fn: CacheSetHandle) => void;
+}
 
+/**
+ * Fast 请求缓存处理器。
+ *
+ * 默认使用内存 Map；调用 `get.use()` 或 `set.use()` 可分别接入项目已有的本地缓存、状态仓库或持久化缓存。
+ */
 export class CacheManage {
+	/** 当前实际执行的缓存函数；调用 `.use()` 时只替换这里保存的实现。 */
 	private _handle: {
 		get: CacheGetHandle;
 		set: CacheSetHandle;
 	};
 
-	/** 获取 */
+	/** 按请求 key 读取缓存；`.use(fn)` 会替换默认读取实现。 */
 	readonly get: CacheGetHandle & CacheGetUseHandle;
-	/** 设置 */
+	/** 按请求 key 写入最终响应值；`.use(fn)` 会替换默认写入实现。 */
 	readonly set: CacheSetHandle & CacheSetUseHandle;
 
-	private _cacheRecord: Map<string, any> = new Map();
+	/** 未注册自定义缓存处理器时使用的进程内缓存。 */
+	private _cacheRecord = new Map<string, unknown>();
 
+	/** 创建带有默认内存缓存实现的处理器。 */
 	constructor() {
 		this._handle = {
-			get: (key: string): any => {
+			get: (key: string): unknown => {
+				// 使用 has() 区分“没有这个键”和“缓存值本身是 undefined”。
 				if (!this._cacheRecord.has(key)) {
 					return null;
 				}
 
+				// 缓存允许保存 false、0、空字符串等假值，不能使用 truthy 判断。
 				return this._cacheRecord.get(key);
 			},
-			set: (key: string, value: any): void => {
+			set: (key: string, value: unknown): void => {
+				// 同一个请求键再次写入时，用最新响应覆盖旧响应。
 				this._cacheRecord.set(key, value);
 			},
 		};
 
-		const getProxy: CacheGetHandle & CacheGetUseHandle = (key: string): any => {
+		// 对外暴露稳定的函数引用，实际调用始终转发给 _handle.get 的当前实现。
+		const getProxy: CacheGetHandle & CacheGetUseHandle = (key: string): unknown => {
 			return this._handle.get(key);
 		};
+		// 只替换内部实现，已经获取过 this.get 的调用方也会立即使用新函数。
 		getProxy.use = (fn: CacheGetHandle): void => {
 			this._handle.get = fn;
 		};
 		this.get = getProxy;
 
-		const setProxy: CacheSetHandle & CacheSetUseHandle = (key: string, value: any): void => {
+		// 写入代理与读取代理采用相同机制，使 `set()` 与 `set.use()` 共用一个入口。
+		const setProxy: CacheSetHandle & CacheSetUseHandle = (key: string, value: unknown): void => {
 			this._handle.set(key, value);
 		};
+		// 替换后续写入逻辑，例如接入 Pinia、localStorage 或其他持久化存储。
 		setProxy.use = (fn: CacheSetHandle): void => {
 			this._handle.set = fn;
 		};

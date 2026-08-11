@@ -1,0 +1,21 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		// 类型测试直接解析源码入口，避免测试尚未构建时读取旧 dist 声明。
+		"paths": {
+			"@fast-china/axios": ["../src/index.ts"],
+			"@fast-china/axios/vite": ["../src/vite.ts"],
+			"@fast-china/axios/webpack": ["../src/webpack.ts"]
+		},
+		// Runtime 测试使用 node:test、process、Buffer 等 Node.js API。
+		"types": ["node"],
+		// 测试只检查类型，不生成 JavaScript 或声明文件。
+		"declaration": false,
+		"declarationMap": false,
+		"isolatedDeclarations": false,
+		// 源码测试跳过第三方声明噪声；package 测试会以 skipLibCheck=false 检查发布声明。
+		"skipLibCheck": true
+	},
+	// 同时检查 Runtime 测试和消费者可见的公开 API 类型契约。
+	"include": ["./**/*.ts"]
+}

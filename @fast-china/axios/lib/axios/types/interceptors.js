@@ -1,2 +1,0 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});exports.InterceptorsManage=class{_handle;request;response;responseError;constructor(){this._handle={request:e=>{},response:(e,s)=>null,responseError:(e,s)=>null};const e=e=>{this._handle.request(e)};e.use=e=>{this._handle.request=e},this.request=e;const s=(e,s)=>{this._handle.response(e,s)};s.use=e=>{this._handle.response=e},this.response=s;const r=(e,s)=>{this._handle.responseError(e,s)};r.use=e=>{this._handle.responseError=e},this.responseError=r}};
-//# sourceMappingURL=interceptors.js.map

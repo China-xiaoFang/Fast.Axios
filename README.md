@@ -1,141 +1,225 @@
-[中](https://gitee.com/FastDotnet/Fast.Axios) | **En**
-
-<h1 align="center">Fast.Axios</h1>
-
-<p align="center">
-  <code>Fast</code> platform An request library built based on <code>Axios</code>, <code>TypeScript</code>.
+<p align="left">
+	<a href="./README.zh.md">简体中文</a> | <strong>English</strong>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@fast-china/axios">
-    <img src="https://img.shields.io/npm/v/@fast-china/axios?color=orange&label=" alt="version" />
-  </a>
-  <a href="https://gitee.com/FastDotnet/Fast.Axios/blob/master/LICENSE">
-    <img src="https://img.shields.io/npm/l/@fast-china/axios" alt="license" />
-  </a>
+	<img src="./Fast.png" alt="logo" width="160" />
 </p>
+
+# @fast-china/axios
+
+A typed Axios request library for Fast applications, browsers, and uni-app, with Fast.NET response handling, a uni-app adapter, and mini-program build plugins.
+
+[![npm version](https://img.shields.io/npm/v/@fast-china/axios?color=orange)](https://www.npmjs.com/package/@fast-china/axios) [![node](https://img.shields.io/badge/node-%5E22.18%20%7C%7C%20%5E24.18-brightgreen)](https://nodejs.org/) [![axios](https://img.shields.io/badge/axios-%5E1.8.1-5a29e4)](https://axios-http.com/) [![license](https://img.shields.io/npm/l/@fast-china/axios)](./LICENSE)
+
+## Highlights
+
+- Preserves Axios request and response interceptors, cancellation, parameter serialization, `validateStatus`, and response transforms.
+- Handles Fast.NET `ApiResponse` business status, simplified data, messages, cache, Loading, and crypto extension points.
+- Routes uni-app `method: "upload" | "download"` requests to `uni.uploadFile` and `uni.downloadFile`.
+- Provides `axios.upload()`, `axios.download()`, and typed uni-app platform configuration.
+- Provides Vite and Webpack mini-program plugins that replace Axios FormData and Blob platform modules only when needed.
+- Publishes pure ESM, declarations, dedicated `vite` and `webpack` subpaths, and a separately minified CDN entry from the repository root.
+- Validates runtime behavior, public types, package entries, Source Maps, the CDN global, the npm archive, and Publint before packing.
+
+## Requirements
+
+- Axios `^1.8.1`.
+- Node.js `^22.18.0 || ^24.18.0` and pnpm `^11.0.0` for repository development.
+- `@dcloudio/types` is recommended for typed uni-app applications.
+- uni-app mini-program builds require `miniprogram-formdata` and `miniprogram-blob` in the application project.
 
 ## Install
 
-#### Using a Package Manager
-
-```sh
-# Choose a package manager of your choice
-
-# NPM
-npm install @fast-china/axios
-
-# Yarn
-yarn add @fast-china/axios
-
-# pnpm (recommend)
-pnpm install @fast-china/axios
+```bash
+pnpm add @fast-china/axios axios
 ```
 
-#### Direct browser import
+Install the platform polyfills in a mini-program project:
 
-##### unpkg
+```bash
+pnpm add miniprogram-formdata miniprogram-blob
+```
+
+### CDN
+
+The `unpkg` and `jsdelivr` fields select `dist/index.global.min.js`. Load Axios first, then access this SDK through the `FastAxios` global:
 
 ```html
-<head>
-	<!-- Import Axios -->
-	<script src="//unpkg.com/axios@1.7.2"></script>
-	<!-- Import request library -->
-	<script src="//unpkg.com/@fast-china/axios"></script>
-</head>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.8.1/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fast-china/axios@2/dist/index.global.min.js"></script>
+<script>
+	FastAxios.createFastAxios({
+		baseUrl: "https://api.example.com",
+		requestCipher: false,
+	});
+
+	FastAxios.axiosUtil.request({
+		url: "/users/1",
+		method: "get",
+		requestType: "query",
+	});
+</script>
 ```
 
-##### jsDelivr
+The equivalent unpkg entry is `https://unpkg.com/@fast-china/axios@2/dist/index.global.min.js`. The CDN build is browser-only; uni-app and the Vite/Webpack plugins must use package-manager imports.
 
-```html
-<head>
-	<!-- Import Axios -->
-	<script src="//cdn.jsdelivr.net/npm/axios@1.7.2"></script>
-	<!-- Import request library -->
-	<script src="//cdn.jsdelivr.net/npm/@fast-china/axios"></script>
-</head>
-```
+## Quick start
 
-## Use
+Create the global FastAxios container once during application startup, then send requests through `axiosUtil.request()`:
 
-```typescript
-import { ElMessage } from "element-plus";
-import { createFastAxios, useFastAxios } from "@fast-china/axios";
+```ts
+import { axiosUtil, createFastAxios } from "@fast-china/axios";
 
-// Initialize FastAxios (singleton mode)
 const fastAxios = createFastAxios({
-	baseUrl: "",
-	timeout: 60000,
+	baseUrl: "https://api.example.com",
+	timeout: 30_000,
 	headers: {
-		authorization: "",
+		Authorization: "Bearer <token>",
 	},
-	requestCipher: true,
+	requestCipher: false,
 });
 
-// Set message prompt.
-fastAxios.message.success.use((message) => ElMessage.success(message));
-fastAxios.message.warning.use((message) => ElMessage.warning(message));
-fastAxios.message.info.use((message) => ElMessage.info(message));
-fastAxios.message.error.use((message) => ElMessage.error(message));
+interface User {
+	id: number;
+	name: string;
+}
 
-// Use FastAxios options, or use the following method to set multiple times.
-const uFastAxios = useFastAxios();
-
-console.log(uFastAxios.baseUrl);
-
-// Set message prompts.
-uFastAxios.message.success.use((message) => ElMessage.success(message));
-uFastAxios.message.warning.use((message) => ElMessage.warning(message));
-uFastAxios.message.info.use((message) => ElMessage.info(message));
-uFastAxios.message.error.use((message) => ElMessage.error(message));
+const user = await axiosUtil.request<User>({
+	url: "/users/1",
+	method: "get",
+	requestType: "query",
+});
 ```
 
-## Update log
+By default, `axiosUtil.request()` reads `code`, `success`, `message`, and `data` from the Fast.NET RESTful response and resolves with `data`. Disable `simpleDataFormat` or `restfulResult` on an individual request when the original structure is required.
 
-Update log [Click to view](https://gitee.com/FastDotnet/Fast.Axios/commits/master)
+## Project handlers
 
-## Protocol
+Every project-level handler uses `.use()` to replace its current implementation. This is not Axios's native interceptor queue; the most recent registration wins:
 
-[Fast.Axios](https://gitee.com/FastDotnet/Fast.Axios) complies with the [Apache-2.0](https://gitee.com/FastDotnet/Fast.Axios/blob/master/LICENSE) open source agreement. Welcome to submit `PR` or `Issue`.
+```ts
+fastAxios.message.error.use((message) => {
+	// Connect the application's Message component.
+});
 
-```
-Apache Open Source License
+fastAxios.loading.show.use((text) => {
+	// Show Loading.
+});
 
-Copyright © 2018-Now xiaoFang
+fastAxios.loading.close.use((_options) => {
+	// Close Loading and manage concurrent request counts in the application.
+});
 
-License:
-This Agreement grants any individual or organization that obtains a copy of this software and its related documentation (hereinafter referred to as the "Software").
-Subject to the terms of this Agreement, you have the right to use, copy, modify, merge, publish, distribute, sublicense, and sell copies of the Software:
-1.All copies or major parts of the Software must retain this Copyright Notice and this License Agreement.
-2.The use, copying, modification, or distribution of the Software shall not violate applicable laws or infringe upon the legitimate rights and interests of others.
-3.Modified or derivative works must clearly indicate the original author and the source of the original Software.
+fastAxios.interceptors.request.use((config) => {
+	config.headers.set("X-Request-Source", "fast-app");
+});
 
-Special Statement:
-- This Software is provided "as is" without any express or implied warranty of any kind, including but not limited to the warranty of merchantability, fitness for purpose, and non-infringement.
-- In no event shall the author or copyright holder be liable for any direct or indirect loss caused by the use or inability to use this Software.
-- Including but not limited to data loss, business interruption, etc.
+fastAxios.interceptors.response.use((response) => {
+	// Return null or undefined to continue the built-in response flow.
+	return undefined;
+});
 
-Disclaimer:
-It is prohibited to use this software to engage in illegal activities such as endangering national security, disrupting social order, or infringing on the legitimate rights and interests of others.
-The author does not assume any responsibility for any legal disputes and liabilities caused by the secondary development of this software.
-```
-
-## Disclaimer
-
-```
-Please do not use it for projects that violate our country's laws
+fastAxios.interceptors.responseError.use((_error) => {
+	// Return a non-null value to replace the final rejected error.
+	return undefined;
+});
 ```
 
-## Contributors
+Cache, request encryption, and response decryption are registered through `cache.get/set.use()` and `crypto.encrypt/decrypt.use()`. The default crypto handlers do not provide cryptographic protection; register the application's protocol before enabling `requestCipher`.
 
-Thank you for all their contributions!
+## uni-app adapter
 
-<a href="https://github.com/China-xiaoFang/Fast.Axios/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=China-xiaoFang/Fast.Axios" />
-</a>
+`axiosUtil.request()` automatically uses the uni-app adapter when the global `uni` object exists. Fast.NET-generated mobile uploads keep the established method contract:
 
-## Supplementary instructions
-
+```ts
+const fileId = await axiosUtil.request<string>({
+	url: "/files/avatar",
+	method: "upload",
+	requestType: "upload",
+	filePath,
+	name: "file",
+	cancelDuplicateRequest: false,
+});
 ```
-If it is helpful to you, you can click ⭐Star in the upper right corner to collect it and get the latest updates. Thank you!
+
+Install the adapter explicitly when creating a raw Axios instance:
+
+```ts
+import axios from "axios";
+import { createUniAppAxiosAdapter } from "@fast-china/axios";
+
+const http = axios.create({
+	adapter: createUniAppAxiosAdapter(),
+	baseURL: "https://api.example.com",
+});
+
+const response = await http.upload(
+	"/files/avatar",
+	{},
+	{
+		filePath,
+		name: "file",
+	}
+);
 ```
+
+See the [uni-app adapter documentation](./src/uni-adapter/README.md) for upload, download, cancellation, progress, and platform behavior.
+
+## Mini-program build plugins
+
+Use the dedicated Vite subpath. The plugin is active only when `UNI_PLATFORM` starts with `mp-`:
+
+```ts
+import { defineConfig } from "vite";
+import uniAppAxiosPlugin from "@fast-china/axios/vite";
+
+export default defineConfig({
+	plugins: [uniAppAxiosPlugin()],
+});
+```
+
+For Webpack:
+
+```ts
+import uniAppAxiosPlugin from "@fast-china/axios/webpack";
+
+export default {
+	plugins: [uniAppAxiosPlugin()],
+};
+```
+
+The plugin replaces Axios FormData and Blob platform modules and fails the build when the application cannot resolve the required polyfill. H5, App, and ordinary Web builds retain their original modules.
+
+## Package entries
+
+| Import or global            | Purpose                                         | Runtime                     |
+| --------------------------- | ----------------------------------------------- | --------------------------- |
+| `@fast-china/axios`         | FastAxios, `axiosUtil`, and the uni-app adapter | Browser and uni-app         |
+| `@fast-china/axios/vite`    | Vite mini-program FormData/Blob plugin          | Node.js build configuration |
+| `@fast-china/axios/webpack` | Webpack mini-program FormData/Blob plugin       | Node.js build configuration |
+| `FastAxios`                 | Minified IIFE root entry                        | Browser script tag          |
+
+Importing the package does not access `window` or `uni`. Platform APIs are accessed only when the adapter is created, a request runs, or the related feature is called.
+
+## Documentation
+
+- [API reference](./docs/API.md)
+- [uni-app adapter](./src/uni-adapter/README.md)
+- [Runtime and package contract](./docs/RUNTIME_CONTRACT.md)
+- [Development and release](./docs/DEVELOPMENT_RELEASE.zh-CN.md)
+- [Contributing](./CONTRIBUTING.md)
+- [Security policy](./SECURITY.md)
+- [Changelog](./CHANGELOG.md)
+
+## Development
+
+```bash
+corepack enable
+pnpm install --frozen-lockfile
+pnpm check
+```
+
+## License
+
+[Apache-2.0](./LICENSE)

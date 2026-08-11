@@ -1,2 +1,0 @@
-class s{_handle;request;response;responseError;constructor(){this._handle={request:s=>{},response:(s,e)=>null,responseError:(s,e)=>null};const s=s=>{this._handle.request(s)};s.use=s=>{this._handle.request=s},this.request=s;const e=(s,e)=>{this._handle.response(s,e)};e.use=s=>{this._handle.response=s},this.response=e;const r=(s,e)=>{this._handle.responseError(s,e)};r.use=s=>{this._handle.responseError=s},this.responseError=r}}export{s as InterceptorsManage};
-//# sourceMappingURL=interceptors.mjs.map
