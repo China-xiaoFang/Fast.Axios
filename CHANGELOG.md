@@ -4,6 +4,13 @@ All notable changes to Fast.Axios are documented in this file.
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-08-26
+
+### Changed
+
+- Synchronized the self-contained ESLint Flat Config with the applicable JavaScript, TypeScript, import, regular-expression, JSON, and Markdown rules from Fast.ESLint.Config, including the source rule comments and project-specific scopes without introducing a cross-package configuration dependency.
+- Updated compatible runtime and development dependencies, the pnpm lockfile, and documented VS Code recommendations while retaining the Node.js 22.18/24.18 compatibility contract.
+
 ## [2.0.0] - 2026-08-11
 
 ### Added
@@ -31,5 +38,6 @@ All notable changes to Fast.Axios are documented in this file.
 - Removed the duplicated nested publication package and legacy multi-tool build scripts.
 - Removed the temporary `uniTask` routing design; the original Fast method-based upload/download contract remains authoritative.
 
-[Unreleased]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.0...HEAD
+[Unreleased]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.1...HEAD
+[2.0.1]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.0...v2.0.1
 [2.0.0]: https://gitee.com/FastDotnet/fast.axios/releases/tag/v2.0.0
