@@ -1,7 +1,8 @@
 import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { cwd, env } from "node:process";
-import { type TransformResult, createUnplugin } from "unplugin";
+import { createUnplugin } from "unplugin";
+import type { TransformResult } from "unplugin";
 
 /**
  * Axios 浏览器平台的 FormData 适配模块。
