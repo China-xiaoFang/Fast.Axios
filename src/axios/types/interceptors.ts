@@ -1,5 +1,5 @@
-import type { FastAxiosRequestConfig } from "./options";
 import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import type { FastAxiosRequestConfig } from "./options";
 
 /** Fast 项目级请求前置处理函数，可直接修改即将发送的请求配置。 */
 type InterceptorsRequestHandle = <Input = unknown>(config: InternalAxiosRequestConfig<Input>) => void;

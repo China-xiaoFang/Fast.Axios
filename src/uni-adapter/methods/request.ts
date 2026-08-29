@@ -1,8 +1,8 @@
 import { AxiosHeaders } from "axios";
 import { createUniAppError, resolveUniAppRequestOptions, settle } from "../utils";
 import OnCanceled from "./onCanceled";
-import type { Method } from "../type";
 import type { AxiosResponse } from "axios";
+import type { Method } from "../type";
 
 /**
  * 使用 `uni.request` 执行 method 不是 `upload` 或 `download` 的标准 HTTP 请求。

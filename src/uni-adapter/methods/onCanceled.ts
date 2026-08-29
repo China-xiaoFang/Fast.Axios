@@ -1,6 +1,6 @@
 import { CanceledError } from "axios";
-import type { UniNetworkTask } from "../type";
 import type { Cancel, InternalAxiosRequestConfig } from "axios";
+import type { UniNetworkTask } from "../type";
 
 /**
  * 把 Axios 的取消来源连接到当前 uni-app 网络任务的 `abort()`。

@@ -1,5 +1,5 @@
-import type { FastAxiosRequestConfig } from "./options";
 import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import type { FastAxiosRequestConfig } from "./options";
 
 /** 请求发送前的加密处理函数，可直接修改 Axios 请求配置。 */
 type CryptoEncryptHandle = <Input>(config: InternalAxiosRequestConfig<Input>, timestamp: number) => void;

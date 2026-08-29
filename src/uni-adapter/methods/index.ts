@@ -2,8 +2,8 @@ import { getMethodType } from "../utils";
 import download from "./download";
 import request from "./request";
 import upload from "./upload";
-import type { Method } from "../type";
 import type { InternalAxiosRequestConfig } from "axios";
+import type { Method } from "../type";
 
 /**
  * 根据 `config.method` 选择且仅选择一个 uni-app 请求执行器。

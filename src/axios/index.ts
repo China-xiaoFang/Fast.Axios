@@ -1,8 +1,8 @@
 import axios, { AxiosError } from "axios";
 import { createUniAppAxiosAdapter } from "../uni-adapter";
 import { useFastAxios } from "./fastAxios";
-import type { ApiResponse, AxiosOptions, FastAxiosRequestConfig } from "./types";
 import type { AxiosRequestConfig, AxiosResponse, Canceler, InternalAxiosRequestConfig } from "axios";
+import type { ApiResponse, AxiosOptions, FastAxiosRequestConfig } from "./types";
 
 /** 单次请求没有显式配置时采用的 Fast 流程默认值。 */
 const axiosOptions = {

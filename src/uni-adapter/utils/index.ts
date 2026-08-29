@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosHeaders } from "axios";
-import type { MethodType, UniNetworkRequestWithoutCallback, UniNetworkTask, UniProgressResult } from "../type";
 import type { AxiosProgressEvent, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import type { MethodType, UniNetworkRequestWithoutCallback, UniNetworkTask, UniProgressResult } from "../type";
 
 /**
  * 根据 Axios method 判断当前请求应使用的 uni-app 网络 API。
