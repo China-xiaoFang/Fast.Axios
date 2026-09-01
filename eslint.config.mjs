@@ -359,7 +359,10 @@ export default defineConfig(
 		],
 		languageOptions: {
 			ecmaVersion: "latest",
-			parserOptions: { projectService: true },
+			parserOptions: {
+				projectService: true,
+				extraFileExtensions: [".vue", ".nvue"],
+			},
 		},
 		/**
 		 * TypeScript 本地覆写规则。
