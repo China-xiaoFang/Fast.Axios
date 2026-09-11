@@ -33,7 +33,7 @@ interface InterceptorsResponseErrorUseHandle {
  */
 export class InterceptorsManage {
 	/** 当前实际执行的三个项目级处理函数。 */
-	private _handle: {
+	private readonly _handle: {
 		request: InterceptorsRequestHandle;
 		response: InterceptorsResponseHandle;
 		responseError: InterceptorsResponseErrorHandle;

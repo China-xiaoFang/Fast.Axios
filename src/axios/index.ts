@@ -44,8 +44,9 @@ const pendingMap = new Map<string, Canceler>();
 const getRequestKey = (config: AxiosRequestConfig): string => {
 	let data = "";
 	// Axios transformRequest 可能已经把 JSON 转成字符串，此时必须原样参与 key 计算。
-	if (typeof config.data === "string") data = config.data;
-	else if (config.data !== undefined) {
+	if (typeof config.data === "string") {
+		data = config.data;
+	} else if (config.data !== undefined) {
 		try {
 			// 普通对象按内容序列化，使相同 URL 但不同请求体不会被识别为重复请求。
 			data = JSON.stringify(config.data) ?? String(config.data);
@@ -433,5 +434,5 @@ export const axiosUtil = {
 	downloadFile,
 };
 
-export * from "./types/options";
+export type * from "./types/options";
 export * from "./fastAxios";

@@ -22,7 +22,7 @@ interface LoadingCloseUseHandle {
  */
 export class LoadingManage {
 	/** 当前实际执行的显示与关闭函数。 */
-	private _handle: {
+	private readonly _handle: {
 		show: LoadingShowHandle;
 		close: LoadingCloseHandle;
 	};

@@ -19,9 +19,9 @@ export const getMethod = (config: InternalAxiosRequestConfig): Method => {
 	switch (methodType) {
 		case "download":
 			return download;
+		case "request":
+			return request;
 		case "upload":
 			return upload;
-		default:
-			return request;
 	}
 };

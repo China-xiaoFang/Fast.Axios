@@ -2,7 +2,7 @@ import { Axios } from "axios";
 import { getMethod } from "./methods";
 import type { AxiosAdapter, AxiosRequestConfig, AxiosResponse } from "axios";
 
-export * from "./axios.type";
+export type * from "./axios.type";
 
 // 多次创建 Axios 实例时只安装一次，避免反复改写同一个 Axios 原型方法。
 let convenienceMethodsInstalled = false;

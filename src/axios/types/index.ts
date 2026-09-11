@@ -5,4 +5,4 @@ export * from "./interceptors";
 export * from "./loading";
 export * from "./message";
 export * from "./messageBox";
-export * from "./options";
+export type * from "./options";

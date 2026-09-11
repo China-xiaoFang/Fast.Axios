@@ -20,7 +20,7 @@ interface CacheSetUseHandle {
  */
 export class CacheManage {
 	/** 当前实际执行的缓存函数；调用 `.use()` 时只替换这里保存的实现。 */
-	private _handle: {
+	private readonly _handle: {
 		get: CacheGetHandle;
 		set: CacheSetHandle;
 	};
@@ -31,7 +31,7 @@ export class CacheManage {
 	readonly set: CacheSetHandle & CacheSetUseHandle;
 
 	/** 未注册自定义缓存处理器时使用的进程内缓存。 */
-	private _cacheRecord = new Map<string, unknown>();
+	private readonly _cacheRecord = new Map<string, unknown>();
 
 	/** 创建带有默认内存缓存实现的处理器。 */
 	constructor() {

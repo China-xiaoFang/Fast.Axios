@@ -26,7 +26,7 @@ interface CryptoDecryptUseHandle {
  */
 export class CryptoManage {
 	/** 当前实际执行的加密与解密函数；`.use()` 只替换对应成员。 */
-	private _handle: {
+	private readonly _handle: {
 		encrypt: CryptoEncryptHandle;
 		decrypt: CryptoDecryptHandle;
 	};

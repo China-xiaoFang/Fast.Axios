@@ -54,12 +54,14 @@ const missingRequestType: FastAxiosRequestConfig = { url: "/users" };
 // @ts-expect-error 未知业务类型不能绕过 RequestType 契约。
 const unsupportedRequestType: RequestType = "paged";
 
-void requestType;
-void uniOptions;
-void requestResult;
-void uploadResult;
-void downloadResult;
-void vitePlugin;
-void webpackPlugin;
-void missingRequestType;
-void unsupportedRequestType;
+export {
+	downloadResult,
+	missingRequestType,
+	requestResult,
+	requestType,
+	uniOptions,
+	unsupportedRequestType,
+	uploadResult,
+	vitePlugin,
+	webpackPlugin,
+};

@@ -24,7 +24,7 @@ interface MessageBoxUseHandle {
  */
 export class MessageBoxManage {
 	/** 当前实际执行的确认框函数。 */
-	private _handle: {
+	private readonly _handle: {
 		confirm: MessageBoxHandle;
 	};
 

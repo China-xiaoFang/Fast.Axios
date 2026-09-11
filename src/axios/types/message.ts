@@ -13,7 +13,7 @@ interface MessageUseHandle {
  */
 export class MessageManage {
 	/** 当前实际执行的四类消息函数，每一类均可单独替换。 */
-	private _handle: {
+	private readonly _handle: {
 		success: MessageHandle;
 		warning: MessageHandle;
 		info: MessageHandle;
