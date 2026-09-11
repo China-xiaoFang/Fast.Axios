@@ -34,6 +34,7 @@ export class MessageManage {
 		this._handle = {
 			// 默认实现保留统一前缀，便于在控制台中定位 SDK 输出。
 			success: (message: string): void => {
+				// eslint-disable-next-line no-console
 				console.log(`[Fast.Axios] ${message}`);
 			},
 			// warning 使用 console.warn，使开发工具按警告级别展示。
@@ -42,6 +43,7 @@ export class MessageManage {
 			},
 			// 普通信息不提升日志级别，使用 console.log 输出。
 			info: (message: string): void => {
+				// eslint-disable-next-line no-console
 				console.log(`[Fast.Axios] ${message}`);
 			},
 			// error 使用 console.error，未接入 UI 消息组件时仍能看到请求错误。

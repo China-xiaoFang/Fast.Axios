@@ -77,7 +77,7 @@ class FastAxios {
 	 *
 	 * @param options 需要更新的基础选项。
 	 */
-	setOptions(options: InitializeOptions = {}): FastAxios {
+	setOptions(options: InitializeOptions = {}): this {
 		// 使用 undefined 判断，允许调用方显式设置空 baseURL、0 超时或 false。
 		if (options.baseUrl !== undefined) {
 			this._baseUrl = options.baseUrl;
@@ -167,7 +167,7 @@ class FastAxios {
 	 */
 	addErrorCode(codes: Record<CodeKeyType, string>): FastAxios;
 
-	addErrorCode(arg: CodeKeyType | Record<CodeKeyType, string>, message?: string): FastAxios {
+	addErrorCode(arg: CodeKeyType | Record<CodeKeyType, string>, message?: string): this {
 		if (typeof arg === "string" || typeof arg === "number") {
 			// 单值重载要求 key 和 message 同时存在；该检查也保护未经过 TypeScript 的 JavaScript 调用方。
 			if (message === undefined) throw new TypeError("添加单个错误码时必须提供 message。");

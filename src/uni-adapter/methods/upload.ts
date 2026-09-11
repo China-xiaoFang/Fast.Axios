@@ -9,7 +9,7 @@ import type { Method } from "../type";
  *
  * Axios `data` 在配置解析阶段恢复为普通 formData；文件本身由 filePath/file/files 与 name 等 uni 选项描述。
  */
-const upload: Method = (config) => {
+const upload: Method = async (config) => {
 	return new Promise<AxiosResponse>((resolve, reject) => {
 		// 解析阶段会删除 Axios 自动添加的 JSON Content-Type，让 uni.uploadFile 生成正确的 multipart boundary。
 		const requestOptions = resolveUniAppRequestOptions(config);

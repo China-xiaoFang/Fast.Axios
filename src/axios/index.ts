@@ -49,7 +49,7 @@ const getRequestKey = (config: AxiosRequestConfig): string => {
 	} else if (config.data !== undefined) {
 		try {
 			// 普通对象按内容序列化，使相同 URL 但不同请求体不会被识别为重复请求。
-			data = JSON.stringify(config.data) ?? String(config.data);
+			data = JSON.stringify(config.data);
 		} catch {
 			// 循环对象等不可序列化数据仍可请求，但只能使用对象类型作为降级标识。
 			data = Object.prototype.toString.call(config.data);
@@ -148,7 +148,7 @@ const httpErrorStatusHandle = async <Input>(error: AxiosError<unknown, Input>): 
 
 	// 仅对象响应体可能携带 Fast code/message；字符串或二进制内容直接走错误码映射。
 	const errorBody = responseData && typeof responseData === "object" ? (responseData as { code?: string | number; message?: unknown }) : undefined;
-	const code = errorBody?.code ?? error.response?.status ?? error.code ?? error.message ?? "default";
+	const code = (errorBody?.code ?? error.response?.status ?? error.code ?? error.message) || "default";
 	return normalizeMessage(errorBody?.message) ?? fastAxios.errorCode[code] ?? fastAxios.errorCode["default"] ?? "请求失败，请稍后再试！";
 };
 
@@ -317,7 +317,7 @@ const createAxios = async <Output = unknown, Input = unknown>(axiosConfig: FastA
 			return config;
 		},
 		// 请求配置或自定义请求处理器抛出的错误保持原样进入下方统一错误流程。
-		(error: unknown) => Promise.reject(error)
+		async (error: unknown) => Promise.reject(error)
 	);
 
 	// 响应拦截
@@ -375,7 +375,7 @@ const createAxios = async <Output = unknown, Input = unknown>(axiosConfig: FastA
 			// 默认解密器返回 response.data；自定义解密器必须返回后续拆包需要处理的完整响应体。
 			if (options.requestCipher) responseData = fastAxios.crypto.decrypt(response, options);
 			// 只有 RESTful + 简洁模式提取 data；其他 JSON 请求保持完整响应体结构。
-			const result = options.restfulResult && options.simpleDataFormat ? (responseData as ApiResponse<Output, Input>)?.data : responseData;
+			const result = options.restfulResult && options.simpleDataFormat ? (responseData as ApiResponse<Output, Input>).data : responseData;
 
 			// 缓存最终 result，而不是未解密响应，确保缓存命中与首次请求返回完全一致。
 			if (cacheKey) fastAxios.cache.set(cacheKey, result);
@@ -396,7 +396,7 @@ const createAxios = async <Output = unknown, Input = unknown>(axiosConfig: FastA
 				throw error;
 			}
 
-			if (globalThis.navigator?.onLine === false) {
+			if (typeof globalThis.navigator !== "undefined" && !globalThis.navigator.onLine) {
 				// 浏览器明确报告离线时优先展示离线提示，不再使用普通网关错误覆盖它。
 				fastAxios.message.error(fastAxios.errorCode["offLine"] ?? "当前网络不可用。");
 				throw error;

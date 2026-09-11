@@ -9,7 +9,7 @@ import type { Method } from "../type";
  *
  * 成功响应的 `data` 是临时文件路径，不是文件二进制内容；文件生命周期由 uni-app 平台管理。
  */
-const download: Method = (config) => {
+const download: Method = async (config) => {
 	return new Promise<AxiosResponse>((resolve, reject) => {
 		// 下载仍复用 Axios 的 baseURL、params、headers、auth 和 timeout，再转换为 downloadFile 选项。
 		const requestOptions = resolveUniAppRequestOptions(config);

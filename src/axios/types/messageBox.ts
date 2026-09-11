@@ -34,7 +34,7 @@ export class MessageBoxManage {
 	/** 创建优先使用 uni-app、其次使用浏览器原生 confirm 的确认框处理器。 */
 	constructor() {
 		this._handle = {
-			confirm: (options): Promise<void> => {
+			confirm: async (options): Promise<void> => {
 				// uni 是 uni-app 注入的全局对象；存在时使用跨端 showModal，不能访问浏览器 DOM。
 				if (typeof uni !== "undefined") {
 					return new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ export class MessageBoxManage {
 							},
 							fail: (res: UniNamespace.GeneralCallbackResult) => {
 								// 异步回调中必须 reject 当前 Promise，直接 throw 无法让调用方捕获失败结果。
-								reject(new Error(res.errMsg ?? "'uni.showModal' API 调用异常。"));
+								reject(new Error(`'uni.showModal' API 调用异常。${res.errMsg}`));
 							},
 						});
 					});
@@ -73,7 +73,7 @@ export class MessageBoxManage {
 		};
 
 		// 代理函数保持对外引用稳定，每次调用都转发给最新注册的确认框实现。
-		const confirmProxy: MessageBoxHandle & MessageBoxUseHandle = (options): Promise<void> => {
+		const confirmProxy: MessageBoxHandle & MessageBoxUseHandle = async (options): Promise<void> => {
 			return this._handle.confirm(options);
 		};
 		// 替换后续确认框实现，例如接入 Element Plus；不会立即打开确认框。

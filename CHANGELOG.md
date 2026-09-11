@@ -4,6 +4,13 @@ All notable changes to Fast.Axios are documented in this file.
 
 ## [Unreleased]
 
+## [2.0.3] - 2026-09-11
+
+### Changed
+
+- Removed SDK-specific ESLint rule suppressions and updated the source and tests to pass the active strict rules without weakening the shared checks.
+- Refined chainable container typing and normalized request, MessageBox, and uni-app adapter Promise implementations while preserving the documented public API.
+
 ## [2.0.2] - 2026-09-11
 
 ### Changed
@@ -45,7 +52,8 @@ All notable changes to Fast.Axios are documented in this file.
 - Removed the duplicated nested publication package and legacy multi-tool build scripts.
 - Removed the temporary `uniTask` routing design; the original Fast method-based upload/download contract remains authoritative.
 
-[Unreleased]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.2...HEAD
+[Unreleased]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.3...HEAD
+[2.0.3]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.2...v2.0.3
 [2.0.2]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.1...v2.0.2
 [2.0.1]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.0...v2.0.1
 [2.0.0]: https://gitee.com/FastDotnet/fast.axios/releases/tag/v2.0.0

@@ -98,11 +98,14 @@ describe("uni-app Axios adapter", () => {
 		assert.deepEqual(requestResponse.cookies, ["sid=1"]);
 		assert.equal(uploadResponse.data.data, "file-id");
 		assert.equal(downloadResponse.data, "/tmp/report.xlsx");
-		assert.equal(calls.request?.["method"], "GET");
-		assert.equal(calls.request?.["url"], "https://api.example.com/users?page=1");
-		assert.equal(calls.upload?.["method"], "POST");
-		assert.deepEqual(calls.upload?.["formData"], { category: "avatar" });
-		assert.equal(calls.download?.["method"], "GET");
+		assert.ok(calls.request);
+		assert.ok(calls.upload);
+		assert.ok(calls.download);
+		assert.equal(calls.request["method"], "GET");
+		assert.equal(calls.request["url"], "https://api.example.com/users?page=1");
+		assert.equal(calls.upload["method"], "POST");
+		assert.deepEqual(calls.upload["formData"], { category: "avatar" });
+		assert.equal(calls.download["method"], "GET");
 	});
 
 	it("rejects uni success callbacks that fail Axios validateStatus", async () => {

@@ -869,33 +869,6 @@ export default defineConfig(
 		files: ["**/*.md"],
 		extends: [eslintMarkdown.configs.recommended],
 	},
-	// Axios、浏览器、uni-app 与 JavaScript 调用方的运行时值可能比当前声明更宽，保留边界防御判断。
-	{
-		name: "fast-axios/runtime-boundaries",
-		files: ["src/**/*.ts", "tests/**/*.ts"],
-		rules: {
-			"@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
-			"@typescript-eslint/no-unnecessary-condition": "off",
-		},
-	},
-	// 请求拦截器、确认框和 uni adapter 直接转发已有 Promise，避免 async 包装改变第三方接口语义。
-	{
-		name: "fast-axios/promise-forwarding-contracts",
-		files: ["src/axios/index.ts", "src/axios/types/messageBox.ts", "src/uni-adapter/**/*.ts"],
-		rules: { "@typescript-eslint/promise-function-async": "off" },
-	},
-	// 公开链式 API 固定返回 FastAxios，避免声明契约随内部继承层次变化。
-	{
-		name: "fast-axios/public-return-contract",
-		files: ["src/axios/fastAxios.ts"],
-		rules: { "@typescript-eslint/prefer-return-this-type": "off" },
-	},
-	// 默认消息实现需要向控制台输出；调用方仍可通过 `.use(fn)` 替换。
-	{
-		name: "fast-axios/intentional-console",
-		files: ["src/axios/types/message.ts"],
-		rules: { "no-console": "off" },
-	},
 	// 创建 Prettier 兼容层。
 	{
 		...eslintConfigPrettier,

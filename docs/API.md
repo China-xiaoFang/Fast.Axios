@@ -45,7 +45,7 @@ Returns the initialized global container. It throws `Error` when `createFastAxio
 
 ### `setOptions(options?)`
 
-Updates the base options and returns the current container. Headers merge by field; other explicitly supplied values replace the active value. Empty strings, `0`, and `false` are valid.
+Updates the base options and returns the current container. TypeScript preserves the concrete container subtype when chaining this method. Headers merge by field; other explicitly supplied values replace the active value. Empty strings, `0`, and `false` are valid.
 
 ### `addErrorCode()`
 

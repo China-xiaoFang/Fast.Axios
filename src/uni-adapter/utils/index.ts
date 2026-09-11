@@ -43,8 +43,8 @@ export const resolveUniAppRequestOptions = (config: InternalAxiosRequestConfig):
 	}
 
 	if (config.auth) {
-		const username = config.auth.username ?? "";
-		const password = config.auth.password ?? "";
+		const username = config.auth.username || "";
+		const password = config.auth.password || "";
 		// btoa 只接受单字节字符串；仅密码按 Axios 浏览器 adapter 的规则转换为 UTF-8 字节序列。
 		const encodedPassword = password
 			? encodeURIComponent(password).replace(/%([0-9A-F]{2})/gi, (_match, hex: string) => String.fromCharCode(Number.parseInt(hex, 16)))

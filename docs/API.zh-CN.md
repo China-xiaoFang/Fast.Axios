@@ -45,7 +45,7 @@ const fastAxios = createFastAxios({
 
 ### `setOptions(options?)`
 
-更新基础配置并返回当前容器。`headers` 按字段合并；其他显式传入的值直接覆盖。空字符串、`0` 和 `false` 都是有效值。
+更新基础配置并返回当前容器；链式调用时 TypeScript 会保留容器的具体子类型。`headers` 按字段合并；其他显式传入的值直接覆盖。空字符串、`0` 和 `false` 都是有效值。
 
 ### `addErrorCode()`
 

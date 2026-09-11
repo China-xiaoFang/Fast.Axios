@@ -9,7 +9,7 @@ import type { Method } from "../type";
  *
  * uni 的 success 只表示网络任务完成，包含 4xx/5xx；HTTP 状态是否成功仍由 Axios `validateStatus` 决定。
  */
-const request: Method = (config) => {
+const request: Method = async (config) => {
 	return new Promise<AxiosResponse>((resolve, reject) => {
 		// 解析发生在创建任务之前，确保同步配置错误直接拒绝 adapter Promise，而不是进入 uni 回调。
 		const requestOptions = resolveUniAppRequestOptions(config);

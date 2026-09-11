@@ -28,7 +28,7 @@ export const createUniAppAxiosAdapter = (): AxiosAdapter => {
 		 * @param config 文件路径、字段名、请求头、进度回调及其他 Axios/uni-app 配置。
 		 * @returns 包含上传结果的 Axios Promise；HTTP 状态仍由 `validateStatus` 判断。
 		 */
-		Axios.prototype.upload = function <T = unknown, R = AxiosResponse<T>, D = unknown>(
+		Axios.prototype.upload = async function <T = unknown, R = AxiosResponse<T>, D = unknown>(
 			url: string,
 			data?: D,
 			config?: AxiosRequestConfig<D>
@@ -54,7 +54,7 @@ export const createUniAppAxiosAdapter = (): AxiosAdapter => {
 		 * @param config 请求头、查询参数、进度回调及其他 Axios/uni-app 配置。
 		 * @returns Axios Promise；成功响应的 `data` 是 `uni.downloadFile` 返回的临时文件路径。
 		 */
-		Axios.prototype.download = function <T = unknown, R = AxiosResponse<T>, D = unknown>(
+		Axios.prototype.download = async function <T = unknown, R = AxiosResponse<T>, D = unknown>(
 			url: string,
 			config?: AxiosRequestConfig<D>
 		): Promise<R> {
@@ -72,7 +72,7 @@ export const createUniAppAxiosAdapter = (): AxiosAdapter => {
 		convenienceMethodsInstalled = true;
 	}
 
-	return (config) => {
+	return async (config) => {
 		// getMethod 只负责按 method 选择底层 API，原始 config 会完整交给执行器构造 AxiosResponse。
 		const method = getMethod(config);
 		return method(config);
