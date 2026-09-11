@@ -170,6 +170,12 @@ export default defineConfig(
 			"no-case-declarations": "error",
 			// 禁止动态执行字符串代码，避免代码注入和静态分析失效。
 			"no-eval": "error",
+			// 禁止通过字符串间接执行代码，避免绕过 no-eval 和静态分析。
+			"no-implied-eval": "error",
+			// 禁止使用 Function 构造器动态创建函数。
+			"no-new-func": "error",
+			// Promise executor 的返回值不会被 Promise 使用，通常表示遗漏了 resolve 或 reject。
+			"no-promise-executor-return": "error",
 			// 禁止反斜杠续行字符串，优先使用可读性更好的模板字符串。
 			"no-multi-str": "error",
 			// with 会让标识符解析不可预测，并且在严格模式和 ESM 中不可用。
@@ -420,8 +426,14 @@ export default defineConfig(
 					prefer: "type-imports",
 				},
 			],
+			// 类型导入必须直接使用 import type，避免 `import { type X }` 仍产生模块副作用。
+			"@typescript-eslint/no-import-type-side-effects": "error",
+			// 类成员省略 public，但 private 和 protected 必须显式声明可见性。
+			"@typescript-eslint/explicit-member-accessibility": ["error", { accessibility: "no-public" }],
 
 			/** 仅在 Project Service 提供完整类型信息后应用的 TypeScript 类型感知规则覆写。 */
+			// 返回 Promise 的函数统一声明为 async，使异步契约在实现上清晰可见。
+			"@typescript-eslint/promise-function-async": "error",
 			// 是否等待、返回或处理 Promise 由开发者根据业务顺序和异常语义决定。
 			"@typescript-eslint/no-floating-promises": "off",
 			// 不限制框架生命周期和事件回调的返回写法。
@@ -865,6 +877,12 @@ export default defineConfig(
 			"@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
 			"@typescript-eslint/no-unnecessary-condition": "off",
 		},
+	},
+	// 请求拦截器、确认框和 uni adapter 直接转发已有 Promise，避免 async 包装改变第三方接口语义。
+	{
+		name: "fast-axios/promise-forwarding-contracts",
+		files: ["src/axios/index.ts", "src/axios/types/messageBox.ts", "src/uni-adapter/**/*.ts"],
+		rules: { "@typescript-eslint/promise-function-async": "off" },
 	},
 	// 公开链式 API 固定返回 FastAxios，避免声明契约随内部继承层次变化。
 	{

@@ -77,7 +77,7 @@ class FastAxios {
 	 *
 	 * @param options 需要更新的基础选项。
 	 */
-	public setOptions(options: InitializeOptions = {}): FastAxios {
+	setOptions(options: InitializeOptions = {}): FastAxios {
 		// 使用 undefined 判断，允许调用方显式设置空 baseURL、0 超时或 false。
 		if (options.baseUrl !== undefined) {
 			this._baseUrl = options.baseUrl;
@@ -101,7 +101,7 @@ class FastAxios {
 	/** 当前 Axios 实例默认拼接的基础地址。 */
 	private _baseUrl = "";
 	/** Axios 实例使用的 baseURL；允许为空字符串，单次请求仍可传入绝对 URL。 */
-	public get baseUrl(): string {
+	get baseUrl(): string {
 		return this._baseUrl;
 	}
 
@@ -111,14 +111,14 @@ class FastAxios {
 	 * 超时时间，单位毫秒
 	 * @default 60000
 	 */
-	public get timeout(): number {
+	get timeout(): number {
 		return this._timeout;
 	}
 
 	/** 跨请求共享的公共请求头记录。 */
 	private _headers: Record<string, AxiosHeaderValue> = {};
 	/** 创建 Axios 实例时注入的公共请求头；`setOptions()` 会按请求头名称合并更新。 */
-	public get headers(): Record<string, AxiosHeaderValue> {
+	get headers(): Record<string, AxiosHeaderValue> {
 		return this._headers;
 	}
 
@@ -128,7 +128,7 @@ class FastAxios {
 	 * 全局请求加密和响应解密开关；单次请求的 requestCipher 具有更高优先级。
 	 * @default true
 	 */
-	public get requestCipher(): boolean {
+	get requestCipher(): boolean {
 		return this._requestCipher;
 	}
 
