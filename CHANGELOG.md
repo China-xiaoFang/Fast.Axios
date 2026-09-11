@@ -4,6 +4,13 @@ All notable changes to Fast.Axios are documented in this file.
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-09-11
+
+### Changed
+
+- Updated `unplugin` to 3.3.0 and refreshed compatible development dependencies while preserving the existing Vite, Webpack, and uni-app public contracts.
+- Strengthened the self-contained ESLint configuration with the latest shared safety rules and SDK-specific TypeScript checks.
+
 ## [2.0.1] - 2026-08-26
 
 ### Changed
@@ -38,6 +45,7 @@ All notable changes to Fast.Axios are documented in this file.
 - Removed the duplicated nested publication package and legacy multi-tool build scripts.
 - Removed the temporary `uniTask` routing design; the original Fast method-based upload/download contract remains authoritative.
 
-[Unreleased]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.1...HEAD
+[Unreleased]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.2...HEAD
+[2.0.2]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.1...v2.0.2
 [2.0.1]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.0...v2.0.1
 [2.0.0]: https://gitee.com/FastDotnet/fast.axios/releases/tag/v2.0.0
