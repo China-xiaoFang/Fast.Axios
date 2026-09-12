@@ -4,6 +4,13 @@ All notable changes to Fast.Axios are documented in this file.
 
 ## [Unreleased]
 
+## [2.0.4] - 2026-09-12
+
+### Changed
+
+- Expanded the applicable JavaScript, TypeScript, import, RegExp, JSON, Markdown, sorting, and Prettier rules from Fast.ESLint.Config 2.1.8 directly in the repository's single `eslint.config.mjs`.
+- Retained only the Node, browser, and uni-app environment scopes required by this SDK, without a shared-config package dependency or framework rule groups.
+
 ## [2.0.3] - 2026-09-11
 
 ### Changed
@@ -52,7 +59,8 @@ All notable changes to Fast.Axios are documented in this file.
 - Removed the duplicated nested publication package and legacy multi-tool build scripts.
 - Removed the temporary `uniTask` routing design; the original Fast method-based upload/download contract remains authoritative.
 
-[Unreleased]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.3...HEAD
+[Unreleased]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.4...HEAD
+[2.0.4]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.3...v2.0.4
 [2.0.3]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.2...v2.0.3
 [2.0.2]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.1...v2.0.2
 [2.0.1]: https://gitee.com/FastDotnet/fast.axios/compare/v2.0.0...v2.0.1
